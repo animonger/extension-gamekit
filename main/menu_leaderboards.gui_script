@@ -1,0 +1,100 @@
+local btn_back
+local btn_show_lbs_ui
+local btn_get_leaderboards
+local btn_get_default_lb_id
+local btn_send_default_lb_id
+local btn_get_lb_image
+local btn_get_lb_sets
+local btn_get_lbs_in_lb_set
+local btn_get_lb_set_image
+
+local btn_default_scale
+local btn_pressed_scale
+
+function init(self)
+	msg.post("#", "disable")
+	btn_back = gui.get_node("back/button")
+	btn_show_lbs_ui = gui.get_node("show_gc_lbs_ui/button")
+	btn_get_leaderboards = gui.get_node("get_gc_leaderboards/button")
+	btn_get_default_lb_id = gui.get_node("get_gc_default_lb_id/button")
+	btn_send_default_lb_id = gui.get_node("send_gc_default_lb_id/button")
+	btn_get_lb_image = gui.get_node("get_gc_lb_image/button")
+	btn_get_lb_sets = gui.get_node("get_gc_lb_sets/button")
+	btn_get_lbs_in_lb_set = gui.get_node("get_gc_lbs_in_lb_set/button")
+	btn_get_lb_set_image = gui.get_node("get_gc_lb_set_image/button")
+	btn_default_scale = vmath.vector3(1, 1, 1)
+	btn_pressed_scale = vmath.vector3(1.05, 1.3, 1)
+end
+
+-- function final(self)
+	-- Add finalization code here
+	-- Remove this function if not needed
+	-- print(">menu_scores_leader<  ------- function final called")
+-- end
+
+-- function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Remove this function if not needed
+	-- print(">menu_scores_leader<  ------- function on_message called")
+-- end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") and action.pressed then
+		if gui.pick_node(btn_back, action.x, action.y) then
+			gui.set_scale(btn_back, btn_pressed_scale)
+		elseif gui.pick_node(btn_show_lbs_ui, action.x, action.y) then
+			gui.set_scale(btn_show_lbs_ui, btn_pressed_scale)
+		elseif gui.pick_node(btn_get_leaderboards, action.x, action.y) then
+			gui.set_scale(btn_get_leaderboards, btn_pressed_scale)
+		elseif gui.pick_node(btn_get_default_lb_id, action.x, action.y) then
+			gui.set_scale(btn_get_default_lb_id, btn_pressed_scale)
+		elseif gui.pick_node(btn_send_default_lb_id, action.x, action.y) then
+			gui.set_scale(btn_send_default_lb_id, btn_pressed_scale)
+		elseif gui.pick_node(btn_get_lb_image, action.x, action.y) then
+			gui.set_scale(btn_get_lb_image, btn_pressed_scale)
+		elseif gui.pick_node(btn_get_lb_sets, action.x, action.y) then
+			gui.set_scale(btn_get_lb_sets, btn_pressed_scale)
+		elseif gui.pick_node(btn_get_lbs_in_lb_set, action.x, action.y) then
+			gui.set_scale(btn_get_lbs_in_lb_set, btn_pressed_scale)
+		elseif gui.pick_node(btn_get_lb_set_image, action.x, action.y) then
+			gui.set_scale(btn_get_lb_set_image, btn_pressed_scale)
+		end
+	end
+	if action_id == hash("touch") and action.released then
+		if gui.pick_node(btn_back, action.x, action.y) then
+			gui.set_scale(btn_back, btn_default_scale)
+			msg.post("#menu_main", "enable")
+			msg.post("#", "disable")
+		elseif gui.pick_node(btn_show_lbs_ui, action.x, action.y) then
+			gui.set_scale(btn_show_lbs_ui, btn_default_scale)
+			msg.post("/bg#game_center", hash("show_gc_lbs_ui"))
+		elseif gui.pick_node(btn_get_leaderboards, action.x, action.y) then
+			gui.set_scale(btn_get_leaderboards, btn_default_scale)
+			msg.post("/bg#game_center", hash("get_gc_leaderboards"))
+		elseif gui.pick_node(btn_get_default_lb_id, action.x, action.y) then
+			gui.set_scale(btn_get_default_lb_id, btn_default_scale)
+			msg.post("/bg#game_center", hash("get_gc_default_lb_id"))
+		elseif gui.pick_node(btn_send_default_lb_id, action.x, action.y) then
+			gui.set_scale(btn_send_default_lb_id, btn_default_scale)
+			msg.post("/bg#game_center", hash("send_gc_default_lb_id"))
+		elseif gui.pick_node(btn_get_lb_image, action.x, action.y) then
+			gui.set_scale(btn_get_lb_image, btn_default_scale)
+			msg.post("/bg#game_center", hash("get_gc_lb_image"))
+		elseif gui.pick_node(btn_get_lb_sets, action.x, action.y) then
+			gui.set_scale(btn_get_lb_sets, btn_default_scale)
+			msg.post("/bg#game_center", hash("get_gc_lb_sets"))
+		elseif gui.pick_node(btn_get_lbs_in_lb_set, action.x, action.y) then
+			gui.set_scale(btn_get_lbs_in_lb_set, btn_default_scale)
+			msg.post("/bg#game_center", hash("get_gc_lbs_in_lb_set"))
+		elseif gui.pick_node(btn_get_lb_set_image, action.x, action.y) then
+			gui.set_scale(btn_get_lb_set_image, btn_default_scale)
+			msg.post("/bg#game_center", hash("get_gc_lb_set_image"))
+		end
+	end
+end
+
+-- function on_reload(self)
+	-- Add input-handling code here
+	-- Remove this function if not needed
+	-- print(">menu_scores_leader<  ------- function on_reload called")
+-- end

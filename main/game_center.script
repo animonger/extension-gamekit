@@ -1,0 +1,306 @@
+local output = require "main.OutputText"
+local td = require "main.TableDumper"
+local base64 = require "main.base64"
+local isGameCenterEnabled
+local isGameCenterSignInUiEnabled
+local set_output_text_hash
+
+local function display_image(img_width, img_height, img_buffer)
+	local resource_path = go.get("#display", "texture0")
+	local header = {width=img_width, height=img_height, type=resource.TEXTURE_TYPE_2D, format=resource.TEXTURE_FORMAT_RGBA, num_mip_maps=1}
+	resource.set_texture(resource_path, header, img_buffer)
+end
+
+local function on_save_game(self, event)
+	print(">game_center< on_save_game event.type = " .. event.type)
+	td.dumpTable(event)
+	-- saveGameData currenly not working
+	-- continual error 27: not logged into iCloud even though all accounts are logged into iCloud and GameCenter
+	if event.type == "error" then
+		-- if your game receives the error below, tell user to signin to iCloud and turn on iCloud Drive to be able to save their game data
+		-- event.errorCode = 27
+		-- event.description = GKErrorUbiquityContainerUnavailable = 27 The requested operation could not be completed because you are 
+		-- not signed in to iCloud or have not enabled iCloud Drive
+		output.text = output.text .. "on_save_game event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_save_game event.errorCode = " .. tostring(event.errorCode) .. "\n"
+		output.text = output.text .. "on_save_game event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+		-- temporary success callback event below for testing only until error 27 is resolved
+	elseif event.type == "success" then
+		output.text = output.text .. "on_save_game event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_save_game event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	end
+end
+
+local function on_achievements(self, event)
+	print(">game_center< on_achievements event.type = " .. event.type)
+	td.dumpTable(event)
+	if event.type == "error" then
+		output.text = output.text .. "on_achievements event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_achievements event.errorCode = " .. tostring(event.errorCode) .. "\n"
+		output.text = output.text .. "on_achievements event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "success" then
+		output.text = output.text .. "on_achievements event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_achievements event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "achievementImage" then
+		display_image(event.image.width, event.image.height, event.image.buffer)
+		output.text = output.text .. "on_achievements event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_achievements event.achievementID = " .. event.achievementID .. "\n"
+		output.text = output.text .. "on_achievements event.image.width = " .. tostring(event.image.width) .. "\n"
+		output.text = output.text .. "on_achievements event.image.height = " .. tostring(event.image.height) .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "achievementsList" then
+		output.text = output.text .. "on_achievements event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_achievements event.achievementsCount = " .. tostring(event.achievementsCount) .. "\n"
+		for i = 1, event.achievementsCount do
+			output.text = output.text .. "on_achievements event.achievements[" .. tostring(i) .. "].playerAlias = " .. event.achievements[i].playerAlias .. "\n"
+			output.text = output.text .. "on_achievements event.achievements[" .. tostring(i) .. "].playerDisplayName = " .. event.achievements[i].playerDisplayName .. "\n"
+			output.text = output.text .. "on_achievements event.achievements[" .. tostring(i) .. "].playerID = " .. event.achievements[i].playerID .. "\n"
+			output.text = output.text .. "on_achievements event.achievements[" .. tostring(i) .. "].achievementID = " .. event.achievements[i].achievementID .. "\n"
+			output.text = output.text .. "on_achievements event.achievements[" .. tostring(i) .. "].isCompleted = " .. tostring(event.achievements[i].isCompleted) .. "\n"
+			output.text = output.text .. "on_achievements event.achievements[" .. tostring(i) .. "].percentComplete = " .. tostring(event.achievements[i].percentComplete) .. "\n"
+			output.text = output.text .. "on_achievements event.achievements[" .. tostring(i) .. "].showsCompletionBanner = " .. tostring(event.achievements[i].showsCompletionBanner) .. "\n"
+			output.text = output.text .. "on_achievements event.achievements[" .. tostring(i) .. "].lastReportedDate = " .. event.achievements[i].lastReportedDate .. "\n"
+		end
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "achievementsDescList" then
+		output.text = output.text .. "on_achievements event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_achievements event.descriptionsCount = " .. tostring(event.descriptionsCount) .. "\n"
+		for i = 1, event.descriptionsCount do
+			output.text = output.text .. "on_achievements event.descriptions[" .. tostring(i) .. "].achievementTitle = " .. event.descriptions[i].achievementTitle .. "\n"
+			output.text = output.text .. "on_achievements event.descriptions[" .. tostring(i) .. "].achievementID = " .. event.descriptions[i].achievementID .. "\n"
+			output.text = output.text .. "on_achievements event.descriptions[" .. tostring(i) .. "].achievementGroupID = " .. tostring(event.descriptions[i].achievementGroupID) .. "\n"
+			output.text = output.text .. "on_achievements event.descriptions[" .. tostring(i) .. "].unachievedDescription = " .. event.descriptions[i].unachievedDescription .. "\n"
+			output.text = output.text .. "on_achievements event.descriptions[" .. tostring(i) .. "].achievedDescription = " .. event.descriptions[i].achievedDescription .. "\n"
+			output.text = output.text .. "on_achievements event.descriptions[" .. tostring(i) .. "].maximumPoints = " .. tostring(event.descriptions[i].maximumPoints) .. "\n"
+			output.text = output.text .. "on_achievements event.descriptions[" .. tostring(i) .. "].isHidden = " .. tostring(event.descriptions[i].isHidden) .. "\n"
+			output.text = output.text .. "on_achievements event.descriptions[" .. tostring(i) .. "].isReplayable = " .. tostring(event.descriptions[i].isReplayable) .. "\n"
+		end
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	end
+end
+
+local function on_leaderboards(self, event)
+	print(">game_center< on_leaderboards event.type = " .. event.type)
+	td.dumpTable(event)
+	if event.type == "error" then
+		output.text = output.text .. "on_leaderboards event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_leaderboards event.errorCode = " .. tostring(event.errorCode) .. "\n"
+		output.text = output.text .. "on_leaderboards event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "success" then
+		output.text = output.text .. "on_leaderboards event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_leaderboards event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "leaderboardImage" then
+		display_image(event.image.width, event.image.height, event.image.buffer)
+		output.text = output.text .. "on_leaderboards event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_leaderboards event.leaderboardID = " .. event.leaderboardID .. "\n"
+		output.text = output.text .. "on_leaderboards event.image.width = " .. tostring(event.image.width) .. "\n"
+		output.text = output.text .. "on_leaderboards event.image.height = " .. tostring(event.image.height) .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "leaderboardSetImage" then
+		display_image(event.image.width, event.image.height, event.image.buffer)
+		output.text = output.text .. "on_leaderboards event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_leaderboards event.leaderboardSetID = " .. event.leaderboardSetID .. "\n"
+		output.text = output.text .. "on_leaderboards event.image.width = " .. tostring(event.image.width) .. "\n"
+		output.text = output.text .. "on_leaderboards event.image.height = " .. tostring(event.image.height) .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "leaderboardsList" then
+		output.text = output.text .. "on_leaderboards event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_leaderboards event.leaderboardsCount = " .. tostring(event.leaderboardsCount) .. "\n"
+		for i = 1, event.leaderboardsCount do
+			output.text = output.text .. "on_leaderboards event.leaderboards[" .. tostring(i) .. "].leaderboardTitle = " .. event.leaderboards[i].leaderboardTitle .. "\n"
+			output.text = output.text .. "on_leaderboards event.leaderboards[" .. tostring(i) .. "].leaderboardID = " .. event.leaderboards[i].leaderboardID .. "\n"
+			output.text = output.text .. "on_leaderboards event.leaderboards[" .. tostring(i) .. "].leaderboardGroupID = " .. tostring(event.leaderboards[i].leaderboardGroupID) .. "\n"
+		end
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "leaderboardSetsList" then
+		output.text = output.text .. "on_leaderboards event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_leaderboards event.leaderboardSetsCount = " .. tostring(event.leaderboardSetsCount) .. "\n"
+		for i = 1, event.leaderboardSetsCount do
+			output.text = output.text .. "on_leaderboards event.leaderboardSets[" .. tostring(i) .. "].leaderboardSetTitle = " .. event.leaderboardSets[i].leaderboardSetTitle .. "\n"
+			output.text = output.text .. "on_leaderboards event.leaderboardSets[" .. tostring(i) .. "].leaderboardSetID = " .. event.leaderboardSets[i].leaderboardSetID .. "\n"
+			output.text = output.text .. "on_leaderboards event.leaderboardSets[" .. tostring(i) .. "].leaderboardSetGroupID = " .. tostring(event.leaderboardSets[i].leaderboardSetGroupID) .. "\n"
+		end
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "defaultLeaderboardID" then
+		output.text = output.text .. "on_leaderboards defaultLeaderboardID event.leaderboardID = " .. event.leaderboardID .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	end
+end
+
+local function on_scores(self, event)
+	print(">game_center< on_scores event.type = " .. event.type)
+	td.dumpTable(event)
+	if event.type == "error" then
+		output.text = output.text .. "on_scores event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_scores event.errorCode = " .. tostring(event.errorCode) .. "\n"
+		output.text = output.text .. "on_scores event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "success" then
+		output.text = output.text .. "on_scores event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_scores event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "scoresList" then
+		output.text = output.text .. "on_scores event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_scores event.leaderboardTitle = " .. event.leaderboardTitle .. "\n"
+		output.text = output.text .. "on_scores event.leaderboardGroupID = " .. tostring(event.leaderboardGroupID) .. "\n"
+		output.text = output.text .. "on_scores event.leaderboardMaxRange = " .. tostring(event.leaderboardMaxRange) .. "\n"
+		if event.localPlayerScore == nil then -- check if localPlayer has a score on requested leaderboard
+			output.text = output.text .. "on_scores event.localPlayerScore = " .. tostring(event.localPlayerScore) .. "\n"			
+		else
+			output.text = output.text .. "on_scores event.localPlayerScore.playerAlias = " .. event.localPlayerScore.playerAlias .. "\n"
+			output.text = output.text .. "on_scores event.localPlayerScore.playerDisplayName = " .. event.localPlayerScore.playerDisplayName .. "\n"
+			output.text = output.text .. "on_scores event.localPlayerScore.playerID = " .. event.localPlayerScore.playerID .. "\n"
+			output.text = output.text .. "on_scores event.localPlayerScore.leaderboardID = " .. event.localPlayerScore.leaderboardID .. "\n"
+			output.text = output.text .. "on_scores event.localPlayerScore.rank = " .. tostring(event.localPlayerScore.rank) .. "\n"
+			output.text = output.text .. "on_scores event.localPlayerScore.formattedValue = " .. event.localPlayerScore.formattedValue .. "\n"
+			output.text = output.text .. "on_scores event.localPlayerScore.value = " .. tostring(event.localPlayerScore.value) .. "\n"
+			output.text = output.text .. "on_scores event.localPlayerScore.context = " .. tostring(event.localPlayerScore.context) .. "\n"
+			output.text = output.text .. "on_scores event.localPlayerScore.date = " .. event.localPlayerScore.date .. "\n"
+		end
+		output.text = output.text .. "on_scores event.scoresCount = " .. tostring(event.scoresCount) .. "\n"
+		for i = 1, event.scoresCount do
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].playerAlias = " .. event.scores[i].playerAlias .. "\n"
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].playerDisplayName = " .. event.scores[i].playerDisplayName .. "\n"
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].playerID = " .. event.scores[i].playerID .. "\n"
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].leaderboardID = " .. event.scores[i].leaderboardID .. "\n"
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].rank = " .. tostring(event.scores[i].rank) .. "\n"
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].formattedValue = " .. event.scores[i].formattedValue .. "\n"
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].value = " .. tostring(event.scores[i].value) .. "\n"
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].context = " .. tostring(event.scores[i].context) .. "\n"
+			output.text = output.text .. "on_scores event.scores[" .. tostring(i) .. "].date = " .. event.scores[i].date .. "\n"
+		end
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	end
+end
+
+local function on_gc_signin(self, event)
+	print(">game_center< on_gc_signin event.type = " .. event.type)
+	td.dumpTable(event)
+	if event.type == "error" then
+		isGameCenterEnabled = false
+		isGameCenterSignInUiEnabled = false
+		output.text = output.text .. "on_gc_signin event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_gc_signin event.errorCode = " .. tostring(event.errorCode) .. "\n"
+		output.text = output.text .. "on_gc_signin event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "showSignInUI" then
+		isGameCenterEnabled = false
+		isGameCenterSignInUiEnabled = true
+		output.text = output.text .. "on_gc_signin event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_gc_signin event.description = " .. event.description .. "\n"
+		output.text = output.text .. "on_gc_signin isGameCenterSignInUiEnabled  = " .. tostring(isGameCenterSignInUiEnabled) .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "authenticated" then
+		isGameCenterEnabled = true
+		isGameCenterSignInUiEnabled = false
+		output.text = output.text .. "on_gc_signin event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_gc_signin event.localPlayerID = " .. event.localPlayerID .. "\n"
+		output.text = output.text .. "on_gc_signin event.localPlayerAlias = " .. event.localPlayerAlias .. "\n"
+		output.text = output.text .. "on_gc_signin event.localPlayerIsUnderage = " .. tostring(event.localPlayerIsUnderage) .. "\n"
+		output.text = output.text .. "on_gc_signin isGameCenterEnabled = " .. tostring(isGameCenterEnabled) .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	end
+end
+
+function init(self)
+	isGameCenterEnabled = false
+	isGameCenterSignInUiEnabled = false
+	self.default_leaderboardID = "com.animonger.defoldgamekittest.leaderboard"
+	self.second_leaderboardID = "com.animonger.defoldgamekittest.second.leaderboard"
+	self.first_leaderboardSetID = "com.animonger.defoldgamekittest.leaderboardset"
+	self.achievement_40pointsId = "com.animonger.defoldgamekittest.achievement_40points"
+	self.achievement_60pointsId = "com.animonger.defoldgamekittest.achievement_60points"
+	set_output_text_hash = hash("set_output_text")
+end
+
+-- function final(self)
+	-- Add finalization code here
+	-- Remove this function if not needed
+	-- print(">game_center< ------- function final called")
+-- end
+
+-- function update(self, dt)
+-- 	-- Add update code here
+-- 	-- Remove this function if not needed
+-- end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("gc_signin") then
+		if isGameCenterEnabled == false then
+			-- call gc_signin() only once at the launch of your game to register your lua callback and call 
+			-- game center local player authentication. if your game gets moved to the background, game center 
+			-- will automagically reauthenticate the local player when the app moves from background to forground.
+			gamekit.gc_signin(on_gc_signin)
+		else
+			output.text = output.text .. "ALERT, game center is enabled. call gc_signin() only once\n"
+			msg.post("/menus#scroll_text", set_output_text_hash)
+		end
+	elseif message_id == hash("show_gc_signin_ui") then
+		if isGameCenterSignInUiEnabled == true and isGameCenterEnabled == false then
+			-- call gc_show_signin() only once, if local player cancels signin ui you will receive a 
+			-- 'GKErrorCancelled = 2' error. if the local player cancels the singin ui 3 consecutive times 
+			-- on 3 consecutive game launches, game center will stop showing the signin ui at game launch until
+			-- the local player signs into game center through the device's game center settings.
+			gamekit.gc_show_signin("UI")
+		else
+			output.text = output.text .. "ALERT, game center sign in UI is not enabled\n"
+			msg.post("/menus#scroll_text", set_output_text_hash)
+		end
+	elseif isGameCenterEnabled == true then
+		if message_id == hash("send_gc_score") then
+			--print(">game_center< send_gc_score message.score = " .. tostring(message.score))
+			gamekit.gc_send("score", {leaderboardID=self.default_leaderboardID, value=message.score, context=42, callback=on_scores})
+			--gamekit.gc_send("score", {leaderboardID=self.second_leaderboardID, value=message.score, context=9, callback=on_scores})
+		elseif message_id == hash("get_gc_scores") then
+			gamekit.gc_get("scores", {leaderboardID=self.default_leaderboardID, playerScope="Global", timeScope="AllTime", range={1,5}, callback=on_scores})
+			--gamekit.gc_get("scores", {leaderboardID=self.second_leaderboardID, playerScope="Global", timeScope="AllTime", range={1,6}, callback=on_scores})
+		elseif message_id == hash("show_gc_lbs_ui") then
+			gamekit.gc_show("leaderboardsUI", {leaderboardID=self.default_leaderboardID, timeScope="AllTime"})
+			--gamekit.gc_show("leaderboardsUI", {leaderboardID=self.second_leaderboardID, timeScope="AllTime"})
+		elseif message_id == hash("get_gc_leaderboards") then
+			gamekit.gc_get("leaderboards", {callback=on_leaderboards})
+		elseif message_id == hash("get_gc_default_lb_id") then
+			gamekit.gc_get("defaultLeaderboardID", {callback=on_leaderboards})
+		elseif message_id == hash("send_gc_default_lb_id") then
+			gamekit.gc_send("setDefaultLeaderboardID", {leaderboardID=self.default_leaderboardID, callback=on_leaderboards})
+			--gamekit.gc_send("setDefaultLeaderboardID", {leaderboardID=self.second_leaderboardID, callback=on_leaderboards})
+		elseif message_id == hash("get_gc_lb_image") then
+			gamekit.gc_get("leaderboardImage", {leaderboardID=self.default_leaderboardID, callback=on_leaderboards})
+			--gamekit.gc_get("leaderboardImage", {leaderboardID=self.second_leaderboardID, callback=on_leaderboards})
+		elseif message_id == hash("get_gc_lb_sets") then
+			gamekit.gc_get("leaderboardSets", {callback=on_leaderboards})
+		elseif message_id == hash("get_gc_lbs_in_lb_set") then
+			gamekit.gc_get("leaderboardsInLeaderboardSet", {leaderboardSetID=self.first_leaderboardSetID, callback=on_leaderboards})
+		elseif message_id == hash("get_gc_lb_set_image") then
+			gamekit.gc_get("leaderboardSetImage", {leaderboardSetID=self.first_leaderboardSetID, callback=on_leaderboards})
+		elseif message_id == hash("send_gc_achievement") then
+			--gamekit.gc_send("achievementProgress", {achievementID=self.achievement_40pointsId, percentComplete=message.percent, showsCompletionBanner=true, callback=on_achievements})
+			gamekit.gc_send("achievementProgress", {achievementID=self.achievement_60pointsId, percentComplete=message.percent, showsCompletionBanner=true, callback=on_achievements})
+		elseif message_id == hash("show_gc_achvs_ui") then
+			-- parameters table expected even though there are no parameters to send
+			gamekit.gc_show("achievementsUI", {})
+		elseif message_id == hash("get_gc_achvs_progress") then
+			gamekit.gc_get("achievementsProgress", {callback=on_achievements})
+		elseif message_id == hash("get_gc_achvs_description") then
+			gamekit.gc_get("achievementsDescription", {callback=on_achievements})
+		elseif message_id == hash("get_gc_achv_image") then
+			gamekit.gc_get("achievementImage", {achievementID=self.achievement_40pointsId, callback=on_achievements})
+		elseif message_id == hash("send_gc_reset_achvs") then
+			gamekit.gc_send("resetAchievements", {callback=on_achievements})
+		elseif message_id == hash("send_gc_game_data") then
+			print(">game_center< send_gc_game_data message.data = " .. message.data)
+			local dataB64 = base64.encode(message.data)
+			print(">game_center< send_gc_game_data dataB64 = " .. dataB64)
+			gamekit.gc_send("saveGame", {gameData=dataB64, withName="FirstSavedGame", callback=on_save_game})
+		end
+	else
+		output.text = output.text .. "ALERT, call gc_signin, game center is not enabled\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	end
+end

@@ -1,0 +1,28 @@
+images {
+  image: "/assets/text_bg_blue.png"
+}
+images {
+  image: "/assets/button_bg_orange.png"
+}
+images {
+  image: "/assets/cancel_text.png"
+}
+images {
+  image: "/assets/text_bg_selected.png"
+}
+animations {
+  id: "caret_blink"
+  images {
+    image: "/assets/text_caret_01.png"
+  }
+  images {
+    image: "/assets/text_caret_02.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 2
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+margin: 0
+extrude_borders: 2
+inner_padding: 0

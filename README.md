@@ -8,7 +8,7 @@ GameKit native extension supports macOS and iOS Defold apps.
 
 ## Setup
 Include the GameKit extension in your Defold project by adding it as a [Defold library dependency.](http://www.defold.com/manuals/libraries/)  
-Open your `game.project` file and in the dependencies field under project add:
+Open your `game.project` file in the dependencies field under project add:
 
     https://github.com/animonger/extension-gamekit/archive/master.zip
 
@@ -17,7 +17,7 @@ Examples of the GameKit Lua calls to Game Center can be found in the [game_cente
 
 # Lua Reference
 
-#### Initialize
+### Initialize Local Player
 Before you can make any calls to Game Center you must authenticate the local player first.
 `gamekit.gc_signin(on_gc_signin)` This function takes one parameter, a Lua callback fuction to receive Game Center signin events.    
 Callback Events:  

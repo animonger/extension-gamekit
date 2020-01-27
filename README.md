@@ -10,4 +10,4 @@ GameKit extension supports macOS and iOS.
 ## Installation
 You can use the GameKit extension in your Defold project by adding this project as a [Defold library dependency](http://www.defold.com/manuals/libraries/). Open your game.project file and in the dependencies field under project add:
 
-https://github.com/animonger/extension-gamekit/archive/master.zip
+    https://github.com/animonger/extension-gamekit/archive/master.zip

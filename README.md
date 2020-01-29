@@ -20,8 +20,8 @@ Examples of the GameKit Lua calls to Game Center can be found in the [game_cente
 Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
 (namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{`(param key) `leaderboardID=` (param value) `"your_gc_leaderboardID"})`  
 
-* [Initialize](../README.md#initialize-local-player)  
-* [Scores](../README.md#scores)  
+* [Initialize](https://github.com/animonger/extension-gamekit/blob/master/README.md#initialize-local-player)  
+* [Scores](README.md#scores)  
 
 ### Initialize Local Player
 Before you can make any calls to Game Center you must authenticate the local player first by calling:  

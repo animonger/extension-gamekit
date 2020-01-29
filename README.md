@@ -27,6 +27,7 @@ Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", 
 
 * [**Initialize**](README.md#initialize-local-player)  
 * [**Scores**](README.md#scores)  
+* [**Leaderboards**](README.md#leaderboards)  
 
 ### Initialize Local Player
 Before you can make any calls to Game Center you must authenticate the local player first by calling:  
@@ -41,7 +42,7 @@ If the local player has not previously signed in to Game Center your game will r
 Call `gamekit.gc_show_signin("UI")` when convenient to allow local player to sign into Game Center. This function takes one string ("UI") parameter.
 
 ### Scores
-Before you can send and get scores in your game, you must configure Leaderboards in [App Store Connect.](https://appstoreconnect.apple.com)  
+Before you can send and get Game Center scores in your game, you must configure Leaderboards in [App Store Connect.](https://appstoreconnect.apple.com)  
 
 **gamekit.gc_send("score", {parms})** - Send local player's score to Game Center leaderboard.  
 `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
@@ -65,3 +66,74 @@ Before you can send and get scores in your game, you must configure Leaderboards
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "scoresList"`, (string) `event.leaderboardTitle`, (string) `event.leaderboardGroupID`, (number) `event.leaderboardMaxRange`, (table `event.localPlayerScore`, (string) `event.localPlayerScore.playerAlias`, (string) `event.localPlayerScore.playerDisplayName`, (string) `event.localPlayerScore.playerID`, (string) `event.localPlayerScore.leaderboardID`, (number) `event.localPlayerScore.rank`, (string) `event.localPlayerScore.formattedValue`, (number) `event.localPlayerScore.value`, (number) `event.localPlayerScore.context`, (string) `event.localPlayerScore.date`, (number) `event.scoresCount`, (table) `event.scores`, (string) `event.scores[i].playerAlias`, (string) `event.scores[i].playerDisplayName`, (string) `event.scores[i].playerID`, (string) `event.scores[i].leaderboardID`, (number) `event.scores[i].rank`, (string) `event.scores[i].formattedValue`, (number) `event.scores[i].value`, (number) `event.scores[i].context` and (string) `event.scores[i].date`  
+
+### Leaderboards
+Before you can add Game Center Leaderboards in your game, you must configure Leaderboards in [App Store Connect.](https://appstoreconnect.apple.com)  
+
+**gamekit.gc_show("leaderboardsUI", {parms})** - Show Game Center Leaderboards UI.  
+`gamekit.gc_show("leaderboardsUI", {leaderboardID="your_gc_leaderboardID", timeScope="AllTime"})`  
+**Parameters Table Keys:**  
+(string) **leaderboardID** – A unique Game Center leaderboard identifier string you created for your game on App Store Connect.  
+(string) **timeScope** – A filter string used to get scores that were posted to Game Center within a specific period of time. `timeScope=”Today”` or `timeScope=”Week”` or `timeScope=”AllTime”`. “Today” will get player scores recorded in the past 24 hours, “Week” will get player scores recorded in the past week, “AllTime” will get player scores recorded for all time.  
+**Callback Events:** none  
+
+**gamekit.gc_get("leaderboards", {parms})** - Get Game Center Leaderboards.  
+`gamekit.gc_get("leaderboards", {callback=on_leaderboards})`  
+**Parameters Table Key:**  
+(function) **callback** – A function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "leaderboardsList"`, `(number) event.leaderboardsCount`, (table) `event.leaderboards`, (string) `event.leaderboards[i].leaderboardTitle`, (string) `event.leaderboards[i].leaderboardID` and (string) `event.leaderboards[i].leaderboardGroupID`  
+
+**gamekit.gc_get("defaultLeaderboardID", {parms})** - Get Game Center default leaderboardID.  
+`gamekit.gc_get("defaultLeaderboardID", {callback=on_leaderboards})`  
+**Parameters Table Key:**  
+(function) **callback** – A function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "defaultLeaderboardID"`, (string) `event.leaderboardID`  
+
+**gamekit.gc_send("setDefaultLeaderboardID", {parms})** - Set Game Center default leaderboardID.  
+`gamekit.gc_send("setDefaultLeaderboardID", {leaderboardID="your_gc_leaderboardID", callback=on_leaderboards})`  
+**Parameters Table Keys:**  
+(string) **leaderboardID** – A unique Game Center leaderboard identifier string you created for your game on App Store Connect.  
+(function) **callback** – A function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "success"`, (string)`event.description`  
+
+**gamekit.gc_get("leaderboardImage", {parms})** - Get Game Center Leaderboard image. 
+`gamekit.gc_get("leaderboardImage", {leaderboardID="your_gc_leaderboardID", callback=on_leaderboards})`  
+**Parameters Table Keys:**  
+(string) **leaderboardID** – A unique Game Center leaderboard identifier string you created for your game on App Store Connect.  
+(function) **callback** – A function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "leaderboardImage"`, (string) `event.leaderboardID`, (table) `event.image`, (number) `event.image.width`, (number) `event.image.height` and (bitmap) `event.image.buffer`  
+
+**gamekit.gc_get("leaderboardSets", {parms})** - Get Game Center Leaderboard Sets.  
+`gamekit.gc_get("leaderboardSets", {callback=on_leaderboards})`  
+**Parameters Table Key:**  
+(function) **callback** – A function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "leaderboardSetsList"`, `(number) event.leaderboardSetsCount`, (table) `event.leaderboardSets`, (string) `event.leaderboardSets[i].leaderboardTitle`, (string) `event.leaderboardSets[i].leaderboardID` and (string) `event.leaderboardSets[i].leaderboardGroupID`  
+
+**gamekit.gc_get("leaderboardsInLeaderboardSet", {parms})** - Get Game Center Leaderboards in Leaderboard Sets.  
+`gamekit.gc_get("leaderboardsInLeaderboardSet", {leaderboardSetID="your_gc_leaderboardSetID", callback=on_leaderboards})`  
+**Parameters Table Keys:**  
+(string) **leaderboardSetID** – A unique Game Center leaderboard set identifier string you created for your game on App Store Connect. 
+(function) **callback** – A function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "leaderboardsList"`, `(number) event.leaderboardsCount`, (table) `event.leaderboards`, (string) `event.leaderboards[i].leaderboardTitle`, (string) `event.leaderboards[i].leaderboardID` and (string) `event.leaderboards[i].leaderboardGroupID`  
+
+**gamekit.gc_get("leaderboardSetImage", {parms})** - Get Game Center Leaderboard Set image.  
+`gamekit.gc_get("leaderboardSetImage", {leaderboardSetID="your_gc_leaderboardSetID", callback=on_leaderboards})`  
+**Parameters Table Keys:**  
+(string) **leaderboardSetID** – A unique Game Center leaderboard set identifier string you created for your game on App Store Connect.  
+(function) **callback** – A function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "leaderboardSetImage"`, (string) `event.leaderboardSetID`, (table) `event.image`, (number) `event.image.width`, (number) `event.image.height` and (bitmap) `event.image.buffer`  
+

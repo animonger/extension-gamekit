@@ -20,6 +20,9 @@ Examples of the GameKit Lua calls to Game Center can be found in the [game_cente
 Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
 (namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{`(param key) `leaderboardID=` (param value) `"your_gc_leaderboardID"})`  
 
+* [Initialize](../README.md#initialize-local-player)  
+* [Scores](../README.md#scores)  
+
 ### Initialize Local Player
 Before you can make any calls to Game Center you must authenticate the local player first by calling:  
 `gamekit.gc_signin(on_gc_signin)`  
@@ -39,10 +42,10 @@ Before you can send and get scores in your game, you must configure Leaderboards
 `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
 **Parameters Table Keys:**  
 (string) **leaderboardID** – A unique Game Center leaderboard identifier string you created for your game on App Store Connect.  
-(number) **value** – A score number value earned by the local player. You determine how your scores are formatted when you define the leaderboard on App Store Connect. 
+(number) **value** – A score number value earned by the local player. You determine how your scores are formatted when you define the leaderboard on App Store Connect.  
 (number) **context** (optional key) – A number value used by your game. The context property is stored and returned to your game, but is otherwise ignored by Game Center. It allows your game to associate an arbitrary 64-bit unsigned integer value with the score data reported to Game Center. You decide how this context value is interpreted by your game.  
 (function) **callback** – A function to receive callback events.  
-Callback Events:  
+**Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "success"`, (string)`event.description`  
 

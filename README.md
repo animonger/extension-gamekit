@@ -1,10 +1,10 @@
 # Defold Apple GameKit Extension
-[Defold](https://www.defold.com) native extension for [Apple GameKit Framework.](https://developer.apple.com/documentation/gamekit?language=objc) GameKit is the Apple framework that integtates Apple Game Center features like achievements, leaderboards and online matches into your macOS and iOS games. 
+[Defold](https://www.defold.com) native extension for [Apple GameKit Framework.](https://developer.apple.com/documentation/gamekit?language=objc) GameKit is the Apple framework that integtates Apple Game Center features like achievements, leaderboards and online matches into your macOS and iOS games.
 
 ## Status
-Currently functional native extension but not completed. 
-Integrated GameKit features so far: Players, Leaderboards, Achievements, View Controllers and Errors. 
-Possible GameKit features to be integrated: Real-Time Matches, Challenges, Player Invitations, Notifications, Entitlements, Turn-based Games and Save Game Data. 
+Currently functional Defold extension but not completed.  
+Integrated functional GameKit features so far: Players, Leaderboards, Achievements, View Controllers and Errors.  
+Possible GameKit features to be integrated: Real-Time Matches, Challenges, Player Invitations, Notifications, Entitlements, Turn-based Games and Save Game Data.
 
 ## Requirements
 GameKit native extension supports macOS and iOS Defold apps.  
@@ -18,7 +18,7 @@ Open your `game.project` file in the dependencies field under project add:
     https://github.com/animonger/extension-gamekit/archive/master.zip
 
 ## Example Lua Code
-Examples of the GameKit Lua calls to Game Center can be found in the [game_center.script](https://github.com/animonger/extension-gamekit/blob/master/main/game_center.script) of the Defold GameKit Test example app.  
+Examples of the GameKit Lua calls to Game Center can be found in the [game_center.script](https://github.com/animonger/extension-gamekit/blob/master/main/game_center.script) of the Defold GameKit Test example app.
 
 # Lua GameKit Reference
 ### Usage
@@ -26,22 +26,22 @@ Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", 
 (namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{`(param key) `leaderboardID=` (param value) `"your_gc_leaderboardID"})`  
 
 * [**Initialize**](README.md#initialize-local-player)  
-* [Scores](README.md#scores)  
+* [**Scores**](README.md#scores)  
 
 ### Initialize Local Player
 Before you can make any calls to Game Center you must authenticate the local player first by calling:  
-`gamekit.gc_signin(on_gc_signin)`  
-This function takes one parameter (Lua callback fuction) to receive Game Center signin events.    
+`gamekit.gc_signin(on_gc_signin)`   
+This function takes one parameter (Lua callback fuction) to receive Game Center signin events.  
 **Callback Events:**  
-`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`   
 `event.type == "showSignInUI"`, (string)`event.description`  
 `event.type == "authenticated"`, (string)`event.localPlayerID`, (string)`event.localPlayerAlias` and (boolean)`event.localPlayerIsUnderage`  
 Call `gamekit.gc_signin()` only one time after your game launches; each time your game moves from the background to the foreground, GameKit automatically authenticates the local player again.  
 If the local player has not previously signed in to Game Center your game will receive `event.type == "showSignInUI"`  
-Call `gamekit.gc_show_signin("UI")` when convenient to allow local player to sign into Game Center. This function takes one string ("UI") parameter.   
+Call `gamekit.gc_show_signin("UI")` when convenient to allow local player to sign into Game Center. This function takes one string ("UI") parameter.
 
 ### Scores
-Before you can send and get scores in your game, you must configure Leaderboards in [App Store Connect.](https://appstoreconnect.apple.com) 
+Before you can send and get scores in your game, you must configure Leaderboards in [App Store Connect.](https://appstoreconnect.apple.com)  
 
 **gamekit.gc_send("score", {parms})** - Send local player's score to Game Center leaderboard.  
 `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
@@ -54,7 +54,7 @@ Before you can send and get scores in your game, you must configure Leaderboards
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "success"`, (string)`event.description`  
 
-**gamekit.gc_get("scores", {parms})** - Get player scores from Game Center leaderboard.   
+**gamekit.gc_get("scores", {parms})** - Get player scores from Game Center leaderboard.  
 `gamekit.gc_get("scores", {leaderboardID="your_gc_leaderboardID", playerScope="Global", timeScope="AllTime", range={1,5}, callback=on_scores})`  
 **Parameters Table Keys:**  
 (string) **leaderboardID** – A unique Game Center leaderboard identifier string you created for your game on App Store Connect.  
@@ -64,4 +64,4 @@ Before you can send and get scores in your game, you must configure Leaderboards
 (function) **callback** – A function to receive callback events.  
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
-`event.type == "scoresList"`, (string) `event.leaderboardTitle`, (string) `event.leaderboardGroupID`, (number) `event.leaderboardMaxRange`, (table) `event.localPlayerScore`, (string) `event.localPlayerScore.playerAlias`, (string) `event.localPlayerScore.playerDisplayName`, (string) `event.localPlayerScore.playerID`, (string) `event.localPlayerScore.leaderboardID`, (number) `event.localPlayerScore.rank`, (string) `event.localPlayerScore.formattedValue`, (number) `event.localPlayerScore.value`, (number) `event.localPlayerScore.context`, (string) `event.localPlayerScore.date`, (number) `event.scoresCount`, (table) `event.scores`, (string) `event.scores[i].playerAlias`, (string) `event.scores[i].playerDisplayName`, (string) `event.scores[i].playerID`, (string) `event.scores[i].leaderboardID`, (number) `event.scores[i].rank`, (string) `event.scores[i].formattedValue`, (number) `event.scores[i].value`, (number) `event.scores[i].context` and (string) `event.scores[i].date`  
+`event.type == "scoresList"`, (string) `event.leaderboardTitle`, (string) `event.leaderboardGroupID`, (number) `event.leaderboardMaxRange`, (table `event.localPlayerScore`, (string) `event.localPlayerScore.playerAlias`, (string) `event.localPlayerScore.playerDisplayName`, (string) `event.localPlayerScore.playerID`, (string) `event.localPlayerScore.leaderboardID`, (number) `event.localPlayerScore.rank`, (string) `event.localPlayerScore.formattedValue`, (number) `event.localPlayerScore.value`, (number) `event.localPlayerScore.context`, (string) `event.localPlayerScore.date`, (number) `event.scoresCount`, (table) `event.scores`, (string) `event.scores[i].playerAlias`, (string) `event.scores[i].playerDisplayName`, (string) `event.scores[i].playerID`, (string) `event.scores[i].leaderboardID`, (number) `event.scores[i].rank`, (string) `event.scores[i].formattedValue`, (number) `event.scores[i].value`, (number) `event.scores[i].context` and (string) `event.scores[i].date`  

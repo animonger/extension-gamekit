@@ -1,5 +1,10 @@
 # Defold Apple GameKit Extension
-[Defold](https://www.defold.com) native extension for [Apple GameKit Framework.](https://developer.apple.com/documentation/gamekit?language=objc) GameKit is the Apple framework that integtates Apple Game Center features like achievements, leaderboards and online matches into your macOS and iOS games.
+[Defold](https://www.defold.com) native extension for [Apple GameKit Framework.](https://developer.apple.com/documentation/gamekit?language=objc) GameKit is the Apple framework that integtates Apple Game Center features like achievements, leaderboards and online matches into your macOS and iOS games. 
+
+## Status
+Currently functional native extension but not completed. 
+Integrated GameKit features so far: Players, Leaderboards, Achievements, View Controllers and Errors. 
+Possible GameKit features to be integrated: Real-Time Matches, Challenges, Player Invitations, Notifications, Entitlements, Turn-based Games and Save Game Data. 
 
 ## Requirements
 GameKit native extension supports macOS and iOS Defold apps.  
@@ -20,7 +25,7 @@ Examples of the GameKit Lua calls to Game Center can be found in the [game_cente
 Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
 (namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{`(param key) `leaderboardID=` (param value) `"your_gc_leaderboardID"})`  
 
-* [Initialize](https://github.com/animonger/extension-gamekit/blob/master/README.md#initialize-local-player)  
+* [**Initialize**](README.md#initialize-local-player)  
 * [Scores](README.md#scores)  
 
 ### Initialize Local Player

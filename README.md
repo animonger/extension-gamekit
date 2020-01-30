@@ -24,7 +24,7 @@ Examples of the GameKit Lua calls to Game Center can be found in the [game_cente
 Before you add any Game Center features to your Defold game you must activate Game Center in [App Store Connect.](https://appstoreconnect.apple.com)  
 ### Usage
 Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
-(namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{`(param key) `leaderboardID=` (param value) (string) `"your_gc_leaderboardID", value=` (number) `323, context=` (number) `42, callback=` (lua function) `on_scores})`  
+(namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{` (param key) `leaderboardID=` (param value) (string) `"your_gc_leaderboardID", value=` (number) `323, context=` (number) `42, callback=` (lua function) `on_scores})`  
 
 * [**Initialize**](README.md#initialize-local-player)  
 * [**Scores**](README.md#scores)  
@@ -61,7 +61,7 @@ Before you can send and get Game Center scores in your game, you must configure 
 `gamekit.gc_get("scores", {leaderboardID="your_gc_leaderboardID", playerScope="Global", timeScope="AllTime", range={1,5}, callback=on_scores})`  
 **Parameters Table Keys:**  
 (string) **leaderboardID** – A unique Game Center leaderboard identifier string you created for your game on App Store Connect.  
-(string) **playerScope** – A filter string used to get scores for players on Game Center. `playerScope=”Global”` or `playerScope=”FriendsOnly”`. “Global” will get all player’s scores and “FriendsOnly” will only get local player’s friends scores.  
+(string) **playerScope** – A filter string used to get scores for players on Game Center. `playerScope=”Global”` or `playerScope=”FriendsOnly”`. “Global” will get all player scores and “FriendsOnly” will only get local player’s friends scores.  
 (string) **timeScope** – A filter string used to get scores that were posted to Game Center within a specific period of time. `timeScope=”Today”` or `timeScope=”Week”` or `timeScope=”AllTime”`. “Today” will get player scores recorded in the past 24 hours, “Week” will get player scores recorded in the past week, “AllTime” will get player scores recorded for all time.  
 (table) **range** – A filter table of minimum and maximum numbers used to get scores within a specific range that were posted to Game Center. `range={minimum, maximum}`, the minimum range number is 1 and the maximum range number is 100. For example, if you specified a range of {1,10}, you would get the top ten scores from first to tenth.  
 (function) **callback** – A Lua function to receive callback events.  
@@ -85,7 +85,7 @@ Before you can add Game Center Leaderboards in your game, you must configure Lea
 (function) **callback** – A Lua function to receive callback events.  
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
-`event.type == "leaderboardsList"`, `(number) event.leaderboardsCount`, (table) `event.leaderboards`, (string) `event.leaderboards[i].leaderboardTitle`, (string) `event.leaderboards[i].leaderboardID` and (string) `event.leaderboards[i].leaderboardGroupID`  
+`event.type == "leaderboardsList"`, (number) `event.leaderboardsCount`, (table) `event.leaderboards`, (string) `event.leaderboards[i].leaderboardTitle`, (string) `event.leaderboards[i].leaderboardID` and (string) `event.leaderboards[i].leaderboardGroupID`  
 
 **gamekit.gc_get("defaultLeaderboardID", {parms})** - Get Game Center default leaderboardID.  
 `gamekit.gc_get("defaultLeaderboardID", {callback=on_leaderboards})`  
@@ -119,7 +119,7 @@ Before you can add Game Center Leaderboards in your game, you must configure Lea
 (function) **callback** – A Lua function to receive callback events.  
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
-`event.type == "leaderboardSetsList"`, `(number) event.leaderboardSetsCount`, (table) `event.leaderboardSets`, (string) `event.leaderboardSets[i].leaderboardTitle`, (string) `event.leaderboardSets[i].leaderboardID` and (string) `event.leaderboardSets[i].leaderboardGroupID`  
+`event.type == "leaderboardSetsList"`, (number) `event.leaderboardSetsCount`, (table) `event.leaderboardSets`, (string) `event.leaderboardSets[i].leaderboardTitle`, (string) `event.leaderboardSets[i].leaderboardID` and (string) `event.leaderboardSets[i].leaderboardGroupID`  
 
 **gamekit.gc_get("leaderboardsInLeaderboardSet", {parms})** - Get Game Center Leaderboards in Leaderboard Sets.  
 `gamekit.gc_get("leaderboardsInLeaderboardSet", {leaderboardSetID="your_gc_leaderboardSetID", callback=on_leaderboards})`  
@@ -128,7 +128,7 @@ Before you can add Game Center Leaderboards in your game, you must configure Lea
 (function) **callback** – A Lua function to receive callback events.  
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
-`event.type == "leaderboardsList"`, `(number) event.leaderboardsCount`, (table) `event.leaderboards`, (string) `event.leaderboards[i].leaderboardTitle`, (string) `event.leaderboards[i].leaderboardID` and (string) `event.leaderboards[i].leaderboardGroupID`  
+`event.type == "leaderboardsList"`, (number) `event.leaderboardsCount`, (table) `event.leaderboards`, (string) `event.leaderboards[i].leaderboardTitle`, (string) `event.leaderboards[i].leaderboardID` and (string) `event.leaderboards[i].leaderboardGroupID`  
 
 **gamekit.gc_get("leaderboardSetImage", {parms})** - Get Game Center Leaderboard Set image.  
 `gamekit.gc_get("leaderboardSetImage", {leaderboardSetID="your_gc_leaderboardSetID", callback=on_leaderboards})`  
@@ -158,10 +158,35 @@ Before you can add Game Center Achievements in your game, you must configure Ach
 **Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.  
 **Callback Events:** none  
 
+**gamekit.gc_get("achievementProgress", {parms})** - Get Game Center local player’s Achievement progress.  
 `gamekit.gc_get("achievementsProgress", {callback=on_achievements})`  
+**Parameters Table Key:**  
+(function) **callback** – A Lua function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "achievementsList"`, (number) `event.achievementsCount`, (table) `event.achievements`, (string) `event.achievements[i].playerAlias`, (string) `event.achievements[i].playerDisplayName`, (string) `event.achievements[i].playerID`, (string) `event.achievements[i].achievementID`, (boolean) `event.achievements[i].isCompleted`, (number) `event.achievements[i].percentComplete`, (boolean) `event.achievements[i].showsCompletionBanner` and (string) `event.achievements[i].lastReportedDate`
 
+**gamekit.gc_get("achievementsDescription", {parms})** - Get Game Center Achievement descriptions.  
 `gamekit.gc_get("achievementsDescription", {callback=on_achievements})`  
+**Parameters Table Key:**  
+(function) **callback** – A Lua function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "achievementsDescList"`, (number) `event.descriptionsCount`, (table) `event.descriptions`, (string) `event.descriptions[i].achievementTitle`, (string) `event.descriptions[i].achievementID`, (string) `event.descriptions[i].achievementGroupID`, (string) `event.descriptions[i].unachievedDescription`, (string) `event.descriptions[i].achievedDescription`, (number) `event.descriptions[i].maximumPoints`, (boolean) `event.descriptions[i].isHidden` and (boolean) `event.descriptions[i].isReplayable`  
 
-`gamekit.gc_get("achievementImage", {achievementID=self.achievement_40pointsId, callback=on_achievements})`  
+**gamekit.gc_get("achievementImage", {parms})** - Get Game Center Achievement image.  
+`gamekit.gc_get("achievementImage", {achievementID="your_gc_achievementID", callback=on_achievements})`  
+**Parameters Table Keys:**  
+(string) **achievementID** – A unique Game Center achievement identifier string you created for your game on App Store Connect.  
+(function) **callback** – A Lua function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "achievementImage"`, (string) `event.achievementID`, (table) `event.image`, (number) `event.image.width`, (number) `event.image.height` and (bitmap) `event.image.buffer`  
 
+**gamekit.gc_get("resetAchievements", {parms})** - Reset all local player’s Apple Game Center Achievements.  
 `gamekit.gc_send("resetAchievements", {callback=on_achievements})`  
+**Parameters Table Key:**  
+(function) **callback** – A Lua function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "success"`, (string)`event.description`  

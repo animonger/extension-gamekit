@@ -22,9 +22,10 @@ Examples of the GameKit Lua calls to Game Center can be found in the [game_cente
 ![example app screenshot](DefoldGameKitTestAppScreenShot.png)
 
 # Lua GameKit Reference
+Before you add any Game Center features to your Defold game you must activate Game Center in [App Store Connect.](https://appstoreconnect.apple.com)  
 ### Usage
 Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
-(namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{`(param key) `leaderboardID=` (param value) `"your_gc_leaderboardID"})`  
+(namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{`(param key) `leaderboardID=` (param value) (string) `"your_gc_leaderboardID", value=` (number) `323, context=` (number) `42, callback=` (lua function) `on_scores})`  
 
 * [**Initialize**](README.md#initialize-local-player)  
 * [**Scores**](README.md#scores)  
@@ -138,3 +139,30 @@ Before you can add Game Center Leaderboards in your game, you must configure Lea
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "leaderboardSetImage"`, (string) `event.leaderboardSetID`, (table) `event.image`, (number) `event.image.width`, (number) `event.image.height` and (bitmap) `event.image.buffer`  
 
+### Achievements
+Before you can add Game Center Achievements in your game, you must configure Achievements in [App Store Connect.](https://appstoreconnect.apple.com)  
+
+**gamekit.gc_send("achievementProgress", {parms})** - Send Game Center local player’s Achievement progress.  
+`gamekit.gc_send("achievementProgress", {achievementID="your_gc_achievementID, percentComplete=35.0, showsCompletionBanner=true, callback=on_achievements})`
+**Parameters Table Keys:**  
+(string) **achievementID** – A unique Game Center achievement identifier string you created for your game on App Store Connect.  
+(number) **percentComplete** – A percentage decimal number value between 0.0 and 100.0 of how far the local player has progressed on this achievement.
+(boolean) **showsCompletionBanner** – A boolean value that states whether a notification banner is displayed when the achievement is completed.
+(function) **callback** – A Lua function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "success"`, (string)`event.description`  
+
+**gamekit.gc_show("achievementsUI", {})** - Show Game Center Achievements UI. 
+`gamekit.gc_show("achievementsUI", {})`  
+**Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.
+**Callback Events:** none  
+
+
+`gamekit.gc_get("achievementsProgress", {callback=on_achievements})`  
+
+`gamekit.gc_get("achievementsDescription", {callback=on_achievements})`  
+
+`gamekit.gc_get("achievementImage", {achievementID=self.achievement_40pointsId, callback=on_achievements})`  
+
+`gamekit.gc_send("resetAchievements", {callback=on_achievements})`  

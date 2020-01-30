@@ -1,5 +1,3 @@
-Screenshot of the Defold GameKit Test example app:
-![example app screenshot](DefoldGameKitTestAppScreenShot.png)
 # Defold Apple GameKit Extension
 [Defold](https://www.defold.com) native extension for [Apple GameKit Framework.](https://developer.apple.com/documentation/gamekit?language=objc) GameKit is the Apple framework that integtates Apple Game Center features like achievements, leaderboards and online matches into your macOS and iOS games.
 
@@ -20,7 +18,8 @@ Open your `game.project` file in the dependencies field under project add:
     https://github.com/animonger/extension-gamekit/archive/master.zip
 
 ## Example Lua Code
-Examples of the GameKit Lua calls to Game Center can be found in the [game_center.script](https://github.com/animonger/extension-gamekit/blob/master/main/game_center.script) of the Defold GameKit Test example app.
+Examples of the GameKit Lua calls to Game Center can be found in the [game_center.script](https://github.com/animonger/extension-gamekit/blob/master/main/game_center.script) of the Defold GameKit Test example app:  
+![example app screenshot](DefoldGameKitTestAppScreenShot.png)
 
 # Lua GameKit Reference
 ### Usage

@@ -2,7 +2,7 @@
 [Defold](https://www.defold.com) native extension for [Apple GameKit Framework.](https://developer.apple.com/documentation/gamekit?language=objc) GameKit is the Apple framework that integtates Apple Game Center features like achievements, leaderboards and online matches into your macOS and iOS games.
 
 ## Status
-Currently functional Defold extension but not completed.  
+Currently functional Defold extension but not fully completed.  
 Integrated functional GameKit features so far: Players, Leaderboards, Achievements, View Controllers and Errors.  
 Possible GameKit features to be integrated: Real-Time Matches, Challenges, Player Invitations, Notifications, Entitlements, Turn-based Games and Save Game Data.
 
@@ -13,9 +13,8 @@ GameKit native extension supports macOS and iOS Defold apps.
 
 ## Setup
 Include the GameKit extension in your Defold project by adding it as a [Defold library dependency.](http://www.defold.com/manuals/libraries/)  
-Open your `game.project` file in the dependencies field under project add:
-
-    https://github.com/animonger/extension-gamekit/archive/master.zip
+Open your `game.project` file in the dependencies field under project add:  
+`https://github.com/animonger/extension-gamekit/archive/master.zip`  
 
 ## Example Lua Code
 Examples of the GameKit Lua calls to Game Center can be found in the [game_center.script](https://github.com/animonger/extension-gamekit/blob/master/main/game_center.script) of the Defold GameKit Test example app:  
@@ -30,6 +29,7 @@ Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", 
 * [**Initialize**](README.md#initialize-local-player)  
 * [**Scores**](README.md#scores)  
 * [**Leaderboards**](README.md#leaderboards)  
+* [**Achievements**](README.md#achievements)  
 
 ### Initialize Local Player
 Before you can make any calls to Game Center you must authenticate the local player first by calling:  
@@ -40,7 +40,7 @@ This function takes one parameter (Lua callback fuction) to receive Game Center 
 `event.type == "showSignInUI"`, (string)`event.description`  
 `event.type == "authenticated"`, (string)`event.localPlayerID`, (string)`event.localPlayerAlias` and (boolean)`event.localPlayerIsUnderage`  
 Call `gamekit.gc_signin()` only one time after your game launches; each time your game moves from the background to the foreground, GameKit automatically authenticates the local player again.  
-If the local player has not previously signed in to Game Center your game will receive `event.type == "showSignInUI"`  
+If the local player is not previously signed in to Game Center your game will receive `event.type == "showSignInUI"`  
 Call `gamekit.gc_show_signin("UI")` when convenient to allow local player to sign into Game Center. This function takes one string ("UI") parameter.
 
 ### Scores
@@ -143,21 +143,20 @@ Before you can add Game Center Leaderboards in your game, you must configure Lea
 Before you can add Game Center Achievements in your game, you must configure Achievements in [App Store Connect.](https://appstoreconnect.apple.com)  
 
 **gamekit.gc_send("achievementProgress", {parms})** - Send Game Center local player’s Achievement progress.  
-`gamekit.gc_send("achievementProgress", {achievementID="your_gc_achievementID, percentComplete=35.0, showsCompletionBanner=true, callback=on_achievements})`
+`gamekit.gc_send("achievementProgress", {achievementID="your_gc_achievementID, percentComplete=35.0, showsCompletionBanner=true, callback=on_achievements})`  
 **Parameters Table Keys:**  
 (string) **achievementID** – A unique Game Center achievement identifier string you created for your game on App Store Connect.  
-(number) **percentComplete** – A percentage decimal number value between 0.0 and 100.0 of how far the local player has progressed on this achievement.
-(boolean) **showsCompletionBanner** – A boolean value that states whether a notification banner is displayed when the achievement is completed.
+(number) **percentComplete** – A percentage decimal number value between 0.0 and 100.0 of how far the local player has progressed on this achievement.  
+(boolean) **showsCompletionBanner** – A boolean value that states whether a notification banner is displayed when the achievement is completed.  
 (function) **callback** – A Lua function to receive callback events.  
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "success"`, (string)`event.description`  
 
-**gamekit.gc_show("achievementsUI", {})** - Show Game Center Achievements UI. 
+**gamekit.gc_show("achievementsUI", {})** - Show Game Center Achievements UI.  
 `gamekit.gc_show("achievementsUI", {})`  
-**Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.
+**Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.  
 **Callback Events:** none  
-
 
 `gamekit.gc_get("achievementsProgress", {callback=on_achievements})`  
 

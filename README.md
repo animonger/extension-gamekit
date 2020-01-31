@@ -10,7 +10,7 @@ Possible GameKit features to be integrated: Real-Time Matches, Challenges, Playe
 ## Requirements
 GameKit native extension supports macOS and iOS Defold apps.  
 [Apple Developer Program Membership.](https://developer.apple.com/programs/whats-included/)  
-[Setup Game Center for your app on Apple App Store Connect.](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/iTunesConnectGameCenter_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40013726)  
+[Setup Game Center](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/iTunesConnectGameCenter_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40013726) for your app on [App Store Connect.](https://appstoreconnect.apple.com)
 
 ## Setup
 Include the GameKit extension in your Defold project by adding it as a [Defold library dependency.](https://defold.com/manuals/libraries/#setting-up-library-dependencies)  

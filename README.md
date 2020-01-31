@@ -12,8 +12,9 @@ GameKit native extension supports macOS and iOS Defold apps.
 [Setup Game Center for your app on Apple App Store Connect.](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/iTunesConnectGameCenter_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40013726)  
 
 ## Setup
-Include the GameKit extension in your Defold project by adding it as a [Defold library dependency.](http://www.defold.com/manuals/libraries/)  
-Open your `game.project` file in the dependencies field under project add:  
+Include the GameKit extension in your Defold project by adding it as a [Defold library dependency.](https://defold.com/manuals/libraries/#setting-up-library-dependencies)  
+Open your `game.project` file and paste the link below in the Project Dependencies field:  
+
 `https://github.com/animonger/extension-gamekit/archive/master.zip`  
 
 ## Example Lua Code
@@ -23,9 +24,12 @@ Examples of the GameKit Lua calls to Game Center can be found in the [game_cente
 # Lua GameKit Reference
 Before you add any Game Center features to your Defold game you must activate Game Center in [App Store Connect.](https://appstoreconnect.apple.com)  
 ### Usage
-Example call: `gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
+**Example call:**   
+`gamekit.gc_send("score", {leaderboardID="your_gc_leaderboardID", value=323, context=42, callback=on_scores})`  
+
 (namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{` (param key) `leaderboardID=` (param value) (string) `"your_gc_leaderboardID", value=` (number) `323, context=` (number) `42, callback=` (lua function) `on_scores})`  
 
+### Content Links
 * [**Initialize**](README.md#initialize-local-player)  
 * [**Scores**](README.md#scores)  
 * [**Leaderboards**](README.md#leaderboards)  
@@ -39,9 +43,11 @@ This function takes one parameter (Lua callback fuction) to receive Game Center 
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`   
 `event.type == "showSignInUI"`, (string)`event.description`  
 `event.type == "authenticated"`, (string)`event.localPlayerID`, (string)`event.localPlayerAlias` and (boolean)`event.localPlayerIsUnderage`  
+
 Call `gamekit.gc_signin()` only one time after your game launches; each time your game moves from the background to the foreground, GameKit automatically authenticates the local player again.  
+
 If the local player is not previously signed in to Game Center your game will receive `event.type == "showSignInUI"`  
-Call `gamekit.gc_show_signin("UI")` when convenient to allow local player to sign into Game Center. This function takes one string ("UI") parameter.
+Call `gamekit.gc_show_signin("UI")` when convenient to allow local player to sign into Game Center from your game. This function takes one string ("UI") parameter.
 
 ### Scores
 Before you can send and get Game Center scores in your game, you must configure Leaderboards in [App Store Connect.](https://appstoreconnect.apple.com)  
@@ -111,7 +117,7 @@ Before you can add Game Center Leaderboards in your game, you must configure Lea
 (function) **callback** – A Lua function to receive callback events.  
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
-`event.type == "leaderboardImage"`, (string) `event.leaderboardID`, (table) `event.image`, (number) `event.image.width`, (number) `event.image.height` and (bitmap) `event.image.buffer`  
+`event.type == "leaderboardImage"`, (string) `event.leaderboardID`, (table) `event.image`, (number) `event.image.width`, (number) `event.image.height` and (bitmap `event.image.buffer`  
 
 **gamekit.gc_get("leaderboardSets", {parms})** - Get Game Center Leaderboard Sets.  
 `gamekit.gc_get("leaderboardSets", {callback=on_leaderboards})`  

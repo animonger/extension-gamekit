@@ -16,9 +16,9 @@ GameKit native extension supports macOS and iOS Defold apps.
 Include the GameKit extension in your Defold project by adding it as a [Defold library dependency.](https://defold.com/manuals/libraries/#setting-up-library-dependencies)  
 Open your Defold `game.project` file and paste the link below in the Project Dependencies field:  
 
-`https://github.com/animonger/extension-gamekit/archive/master.zip`  
+    `https://github.com/animonger/extension-gamekit/archive/master.zip`  
 
-Next, select from the Defold menu: Project ▸ Fetch Libraries to update library dependencies.  
+Next, select from the Defold menu: `Project ▸ Fetch Libraries` to update library dependencies.  
 
 ## Example Lua Code
 Examples of GameKit Lua calls to Game Center can be found in the [game_center.script](https://github.com/animonger/extension-gamekit/blob/master/main/game_center.script) of the Defold GameKit Test app:  

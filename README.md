@@ -4,6 +4,7 @@
 ## Status
 Currently functional Defold extension but not fully completed.  
 Integrated functional GameKit features so far: Players, Leaderboards, Achievements, View Controllers and Errors.  
+
 Possible GameKit features to be integrated: Real-Time Matches, Challenges, Player Invitations, Notifications, Entitlements, Turn-based Games and Save Game Data.
 
 ## Requirements
@@ -18,7 +19,7 @@ Open your `game.project` file and paste the link below in the Project Dependenci
 `https://github.com/animonger/extension-gamekit/archive/master.zip`  
 
 ## Example Lua Code
-Examples of the GameKit Lua calls to Game Center can be found in the [game_center.script](https://github.com/animonger/extension-gamekit/blob/master/main/game_center.script) of the Defold GameKit Test example app:  
+Examples of GameKit Lua calls to Game Center can be found in the [game_center.script](https://github.com/animonger/extension-gamekit/blob/master/main/game_center.script) of the Defold GameKit Test app:  
 ![example app screenshot](DefoldGameKitTestAppScreenShot.png)
 
 # Lua GameKit Reference
@@ -46,7 +47,7 @@ This function takes one parameter (Lua callback fuction) to receive Game Center 
 
 Call `gamekit.gc_signin()` only one time after your game launches; each time your game moves from the background to the foreground, GameKit automatically authenticates the local player again.  
 
-If the local player is not previously signed in to Game Center your game will receive `event.type == "showSignInUI"`  
+If the local player is not previously signed into Game Center your game will receive `event.type == "showSignInUI"`  
 Call `gamekit.gc_show_signin("UI")` when convenient to allow local player to sign into Game Center from your game. This function takes one string ("UI") parameter.
 
 ### Scores

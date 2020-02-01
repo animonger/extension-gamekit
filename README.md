@@ -1,5 +1,5 @@
 # Defold Apple GameKit Extension
-[Defold](https://www.defold.com) native extension for [Apple GameKit Framework.](https://developer.apple.com/documentation/gamekit?language=objc) GameKit is the Apple framework that integtates Apple Game Center features like achievements, leaderboards and online matches into your macOS and iOS games.
+[Defold](https://www.defold.com) native extension for [Apple GameKit Framework.](https://developer.apple.com/documentation/gamekit?language=objc) GameKit is the Apple framework that integtates Apple Game Center features like achievements, leaderboards and online matches into your iOS and macOS games.
 
 ## Status
 Currently functional Defold extension but not fully completed.  
@@ -8,9 +8,9 @@ Integrated functional GameKit features so far: Players, Leaderboards, Achievemen
 Possible GameKit features to be integrated: Real-Time Matches, Challenges, Player Invitations, Notifications, Entitlements, Turn-based Games and Save Game Data.
 
 ## Requirements
-GameKit native extension supports macOS and iOS Defold apps.  
+GameKit native extension supports iOS and macOS Defold apps.  
 [Apple Developer Program Membership.](https://developer.apple.com/programs/whats-included/)  
-[Setup Game Center](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/iTunesConnectGameCenter_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40013726) for your app on [App Store Connect.](https://appstoreconnect.apple.com)
+[Configure Game Center](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/iTunesConnectGameCenter_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40013726) for your app on [App Store Connect.](https://appstoreconnect.apple.com)
 
 ## Setup
 Include the GameKit extension in your Defold project by adding it as a Defold [library dependency.](https://defold.com/manuals/libraries/#setting-up-library-dependencies)  
@@ -130,7 +130,7 @@ Before you can add Game Center Leaderboards in your game, you must configure Lea
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "leaderboardSetsList"`, (number) `event.leaderboardSetsCount`, (table) `event.leaderboardSets`, (string) `event.leaderboardSets[i].leaderboardTitle`, (string) `event.leaderboardSets[i].leaderboardID` and (string) `event.leaderboardSets[i].leaderboardGroupID`  
 
-**gamekit.gc_get("leaderboardsInLeaderboardSet", {parms})** - Get Game Center Leaderboards in Leaderboard Sets.  
+**gamekit.gc_get("leaderboardsInLeaderboardSet", {parms})** - Get Game Center Leaderboards in Leaderboard Set.  
 `gamekit.gc_get("leaderboardsInLeaderboardSet", {leaderboardSetID="your_gc_leaderboardSetID", callback=on_leaderboards})`  
 **Parameters Table Keys:**  
 (string) **leaderboardSetID** – A unique Game Center leaderboard set identifier string you created for your game on App Store Connect. 
@@ -192,7 +192,7 @@ Before you can add Game Center Achievements in your game, you must configure Ach
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "achievementImage"`, (string) `event.achievementID`, (table) `event.image`, (number) `event.image.width`, (number) `event.image.height` and (bitmap) `event.image.buffer`  
 
-**gamekit.gc_get("resetAchievements", {parms})** - Reset all local player’s Apple Game Center Achievements.  
+**gamekit.gc_send("resetAchievements", {parms})** - Reset all local player’s Game Center Achievements.  
 `gamekit.gc_send("resetAchievements", {callback=on_achievements})`  
 **Parameters Table Key:**  
 (function) **callback** – A Lua function to receive callback events.  

@@ -19,35 +19,35 @@
 
 static int GC_Show(lua_State *L)
 {
-	dmLogUserDebug(">GameKit.cpp< GC_Show called");
+	// dmLogUserDebug(">GameKit.cpp< GC_Show called");
 	gameCenterShowCommand(L);
 	return 0;
 }
 
 static int GC_Get(lua_State *L)
 {
-	dmLogUserDebug(">GameKit.cpp< GC_Get called");
+	// dmLogUserDebug(">GameKit.cpp< GC_Get called");
 	gameCenterGetCommand(L);
 	return 0;
 }
 
 static int GC_Send(lua_State *L)
 {
-	dmLogUserDebug(">GameKit.cpp< GC_Send called");
+	// dmLogUserDebug(">GameKit.cpp< GC_Send called");
 	gameCenterSendCommand(L);
 	return 0;
 }
 
 static int GC_ShowSignInUI(lua_State *L)
 {
-	dmLogUserDebug(">GameKit.cpp< GC_ShowSignInUI called");
+	// dmLogUserDebug(">GameKit.cpp< GC_ShowSignInUI called");
 	gameCenterShowSignInUI(L);
 	return 0;
 }
 
 static int GC_SignIn(lua_State *L)
 {
-	dmLogUserDebug(">GameKit.cpp< GC_SignIn called");
+	// dmLogUserDebug(">GameKit.cpp< GC_SignIn called");
 	gameCenterSignIn(L);
 	return 0;
 }
@@ -76,13 +76,13 @@ static void LuaInit(lua_State *L)
 
 dmExtension::Result AppInitializeGameKit(dmExtension::AppParams* params)
 {
-	dmLogUserDebug(">GameKit.cpp< AppInitializeGameKit called");
+	// dmLogUserDebug(">GameKit.cpp< AppInitializeGameKit called");
 	return dmExtension::RESULT_OK;
 }
 
 dmExtension::Result AppFinalizeGameKit(dmExtension::AppParams* params)
 {
-	dmLogUserDebug(">GameKit.cpp< AppFinalizeGameKit called");
+	// dmLogUserDebug(">GameKit.cpp< AppFinalizeGameKit called");
 	return dmExtension::RESULT_OK;
 }
 
@@ -91,13 +91,13 @@ dmExtension::Result InitializeGameKit(dmExtension::Params* params)
 {
 	// Init Lua
 	LuaInit(params->m_L);
-	dmLogUserDebug(">GameKit.cpp< Registered %s Extension", MODULE_NAME);
+	// dmLogUserDebug(">GameKit.cpp< Registered %s Extension", MODULE_NAME);
 	return dmExtension::RESULT_OK;
 }
 
 dmExtension::Result FinalizeGameKit(dmExtension::Params* params)
 {
-	dmLogUserDebug(">GameKit.cpp< FinalizeGameKit called");
+	// dmLogUserDebug(">GameKit.cpp< FinalizeGameKit called");
 	finalizeGameKit(params->m_L);
 	return dmExtension::RESULT_OK;
 }

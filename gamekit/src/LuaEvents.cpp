@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <dmsdk/sdk.h>
 #include "LuaEvents.h"
-#include "LuaStackDump.h"
+// #include "LuaStackDump.h"
 
 // 0 = GC_SIGN_IN_CALLBACK, 1 = GC_SIGN_IN_LUA_INSTANCE
 static int luaRefs[] = {LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF};
@@ -12,7 +12,7 @@ static int luaRefs[] = {LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF};
 
 bool registerGameCenterCallbackLuaRef(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey)
 {
-	dmLogUserDebug(">LuaEvents.cpp< registerGameCenterCallbackLuaRef called");
+	// dmLogUserDebug(">LuaEvents.cpp< registerGameCenterCallbackLuaRef called");
 	luaL_checktype(L, 1, LUA_TFUNCTION);
 	if(luaRefs[cbKey] == LUA_NOREF) {
 		// printLuaStack(L);
@@ -30,7 +30,7 @@ bool registerGameCenterCallbackLuaRef(lua_State *L, LuaRefKey cbKey, LuaRefKey s
 
 void unRegisterGameCenterCallbackLuaRef(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey)
 {
-	dmLogUserDebug(">LuaEvents.cpp< unRegisterGameCenterCallbackLuaRef called");
+	// dmLogUserDebug(">LuaEvents.cpp< unRegisterGameCenterCallbackLuaRef called");
 	if(luaRefs[cbKey] != LUA_NOREF) {
 		dmScript::Unref(L, LUA_REGISTRYINDEX, luaRefs[cbKey]);
 		dmScript::Unref(L, LUA_REGISTRYINDEX, luaRefs[selfKey]);
@@ -41,7 +41,7 @@ void unRegisterGameCenterCallbackLuaRef(lua_State *L, LuaRefKey cbKey, LuaRefKey
 
 void sendGameCenterRegisteredCallbackLuaEvent(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey, int luaTableRef)
 {
-	dmLogUserDebug(">LuaEvents.cpp< sendGameCenterRegisteredCallbackLuaEvent called");
+	// dmLogUserDebug(">LuaEvents.cpp< sendGameCenterRegisteredCallbackLuaEvent called");
 	if(luaRefs[cbKey] != LUA_NOREF) {
 		// printLuaStack(L);
 		// retrieve lua function
@@ -73,7 +73,7 @@ void sendGameCenterRegisteredCallbackLuaEvent(lua_State *L, LuaRefKey cbKey, Lua
 
 void sendGameCenterRegisteredCallbackLuaErrorEvent(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey, int errorCode, const char *description)
 {
-	dmLogUserDebug(">LuaEvents.cpp< sendGameCenterRegisteredCallbackLuaErrorEvent called");
+	// dmLogUserDebug(">LuaEvents.cpp< sendGameCenterRegisteredCallbackLuaErrorEvent called");
 	if(luaRefs[cbKey] != LUA_NOREF) {
 		// printLuaStack(L);
 		// retrieve lua function
@@ -130,7 +130,7 @@ int getTemporaryGameCenterSelfLuaRef(lua_State *L)
 
 void sendGameCenterCallbackLuaEvent(lua_State *L, int luaCallbackRef, int luaSelfRef, int luaTableRef)
 {
-	dmLogUserDebug(">LuaEvents.cpp< sendGameCenterCallbackLuaEvent called");
+	// dmLogUserDebug(">LuaEvents.cpp< sendGameCenterCallbackLuaEvent called");
 	// retrieve lua function
 	lua_rawgeti(L, LUA_REGISTRYINDEX, luaCallbackRef);
 	// dmLogUserDebug(">LuaEvents.cpp< pushed luaCallbackRef to lua stack");
@@ -158,7 +158,7 @@ void sendGameCenterCallbackLuaEvent(lua_State *L, int luaCallbackRef, int luaSel
 
 void sendGameCenterCallbackLuaErrorEvent(lua_State *L, int luaCallbackRef, int luaSelfRef, int errorCode, const char *description)
 {
-	dmLogUserDebug(">LuaEvents.cpp< sendGameCenterCallbackLuaErrorEvent called");
+	// dmLogUserDebug(">LuaEvents.cpp< sendGameCenterCallbackLuaErrorEvent called");
 	// retrieve lua function
 	lua_rawgeti(L, LUA_REGISTRYINDEX, luaCallbackRef);
 	// dmLogUserDebug(">LuaEvents.cpp< pushed luaCallbackRef to lua stack");
@@ -193,7 +193,7 @@ void sendGameCenterCallbackLuaErrorEvent(lua_State *L, int luaCallbackRef, int l
 
 void sendGameCenterCallbackLuaSuccessEvent(lua_State *L, int luaCallbackRef, int luaSelfRef, const char *description)
 {
-	dmLogUserDebug(">LuaEvents.cpp< sendGameCenterCallbackLuaSuccessEvent called");
+	// dmLogUserDebug(">LuaEvents.cpp< sendGameCenterCallbackLuaSuccessEvent called");
 	// retrieve lua function
 	lua_rawgeti(L, LUA_REGISTRYINDEX, luaCallbackRef);
 	// dmLogUserDebug(">LuaEvents.cpp< pushed luaCallbackRef to lua stack");

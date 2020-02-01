@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <dmsdk/sdk.h>
 #include "LuaEvents.h"
-#include "LuaStackDump.h"
+// #include "LuaStackDump.h"
 
 #import <GameKit/GameKit.h>
 #import "ShowCommands.h"
@@ -28,22 +28,21 @@
 
 - (void)gcShowCommandFromLuaState:(lua_State *)L
 {
-    printLuaStack(L);
+    // printLuaStack(L);
     if(lua_gettop(L) == 2) {
         luaL_checktype(L, 2, LUA_TTABLE);
         luaL_checktype(L, 1, LUA_TSTRING);
         const char *command = lua_tostring( L, 1 );
-        NSLog(@"DEBUG:NSLog [ShowCommands.mm] gcShowCommandFromLuaState called command = %s", command);
+        // NSLog(@"DEBUG:NSLog [ShowCommands.mm] gcShowCommandFromLuaState called command = %s", command);
 ///////////// command = leaderboardsUI
         if(strcmp(command, "leaderboardsUI") == 0) {
             NSString *leaderboardID = [self.gameCenterDelegatePtr getLeaderboardIDFromLuaState:L];
             
             GKLeaderboardTimeScope timeScope = [self.gameCenterDelegatePtr getLeaderboardTimeScopeFromLuaState:L];
             lua_settop(L, 0); // clear the whole stack
-            // printLuaStack(L);
             GKGameCenterViewController *gameCenterViewController = [[GKGameCenterViewController alloc] init];
             if (gameCenterViewController != nil) {
-                NSLog(@"DEBUG:NSLog [ShowCommands.mm] gameCenterViewController NOT nil");
+                // NSLog(@"DEBUG:NSLog [ShowCommands.mm] gameCenterViewController NOT nil");
                 gameCenterViewController.gameCenterDelegate = self.gameCenterDelegatePtr;
                 gameCenterViewController.viewState = GKGameCenterViewControllerStateLeaderboards;
                 gameCenterViewController.leaderboardTimeScope = timeScope;
@@ -55,7 +54,7 @@
             lua_settop(L, 0); // clear the whole stack
             GKGameCenterViewController *gameCenterViewController = [[GKGameCenterViewController alloc] init];
             if (gameCenterViewController != nil) {
-                NSLog(@"DEBUG:NSLog [ShowCommands.mm] gameCenterViewController NOT nil");
+                // NSLog(@"DEBUG:NSLog [ShowCommands.mm] gameCenterViewController NOT nil");
                 gameCenterViewController.gameCenterDelegate = self.gameCenterDelegatePtr;
                 gameCenterViewController.viewState = GKGameCenterViewControllerStateAchievements;
                 [self.gameCenterDelegatePtr presentGameCenterViewController:gameCenterViewController];

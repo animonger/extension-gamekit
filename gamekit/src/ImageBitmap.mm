@@ -11,12 +11,12 @@
 #if defined(DM_PLATFORM_IOS)
 - (unsigned char *)extractRGBABitmapFromImage:(UIImage *)image
 {
-	NSLog(@"DEBUG:NSLog [ImageBitmap.mm] iOS extractRGBABitmapFromImage called");
+	// NSLog(@"DEBUG:NSLog [ImageBitmap.mm] iOS extractRGBABitmapFromImage called");
     CGImageRef imageRef = [image CGImage];
 #else // osx platform
 - (unsigned char *)extractRGBABitmapFromImage:(NSImage *)image 
 {
-	NSLog(@"DEBUG:NSLog [ImageBitmap.mm] OSX extractRGBABitmapFromImage called");
+	// NSLog(@"DEBUG:NSLog [ImageBitmap.mm] OSX extractRGBABitmapFromImage called");
 	NSRect imageRect = NSMakeRect(0.0, 0.0, image.size.width, image.size.height);
 	CGImageRef imageRef = [image CGImageForProposedRect:&imageRect context:NULL hints:nil];
 #endif

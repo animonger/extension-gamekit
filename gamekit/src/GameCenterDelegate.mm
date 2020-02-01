@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <dmsdk/sdk.h>
 #include "LuaEvents.h"
-#include "LuaStackDump.h"
+// #include "LuaStackDump.h"
 
 #import <GameKit/GameKit.h>
 #import "GameCenterDelegate.h"
@@ -15,7 +15,7 @@
 // hide game center leaderboards and achievements UI
 - (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController
 {
-    NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] gameCenterViewControllerDidFinish: Hide Game Center UI");
+    // NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] gameCenterViewControllerDidFinish: Hide Game Center UI");
 #if defined(DM_PLATFORM_IOS)
     [gameCenterViewController dismissViewControllerAnimated:YES completion:nil];
 #else // osx platform
@@ -26,7 +26,7 @@
 
 - (void)presentGameCenterViewController:(GKGameCenterViewController *)gameCenterViewController
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] presentGameCenterViewController called");
+	// NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] presentGameCenterViewController called");
 #if defined(DM_PLATFORM_IOS)
 	[[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:gameCenterViewController animated:YES completion:nil];
 #else // osx platform
@@ -283,14 +283,14 @@
 
 - (void)sendImageFromLeaderboardSet:(GKLeaderboardSet *)leaderboardSet luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendImageFromLeaderboardSet leaderboardSet = %@", leaderboardSet);
+	// NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendImageFromLeaderboardSet leaderboardSet = %@", leaderboardSet);
 #if defined(DM_PLATFORM_IOS)
 	[leaderboardSet loadImageWithCompletionHandler:^(UIImage *image, NSError *error) {
 #else // osx platform
 	[leaderboardSet loadImageWithCompletionHandler:^(NSImage *image, NSError *error) {
 #endif
-		NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendImageFromLeaderboardSet error = %@", error);
-		NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendImageFromLeaderboardSet image = %@", image);
+		// NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendImageFromLeaderboardSet error = %@", error);
+		// NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendImageFromLeaderboardSet image = %@", image);
 		if(error) {
 			const char *description = [[self stringAppendErrorDescription:[error localizedDescription]
 				errorCode:[error code]] UTF8String];

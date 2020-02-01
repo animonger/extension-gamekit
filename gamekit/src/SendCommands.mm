@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <dmsdk/sdk.h>
 #include "LuaEvents.h"
-#include "LuaStackDump.h"
+// #include "LuaStackDump.h"
 
 #import <GameKit/GameKit.h>
 #import "SendCommands.h"
@@ -28,12 +28,12 @@
 
 - (void)gcSendCommandFromLuaState:(lua_State *)L
 {
-    printLuaStack(L);
+    // printLuaStack(L);
     if(lua_gettop(L) == 2) {
         luaL_checktype(L, 2, LUA_TTABLE);
         luaL_checktype(L, 1, LUA_TSTRING);
         const char *command = lua_tostring( L, 1 );
-        NSLog(@"DEBUG:NSLog [SendCommands.mm] gcSendCommandFromLuaState called command = %s", command);
+        // NSLog(@"DEBUG:NSLog [SendCommands.mm] gcSendCommandFromLuaState called command = %s", command);
 ///////////// command = score   
         if(strcmp(command, "score") == 0) {
             int luaCallbackRef = getTemporaryGameCenterCallbackLuaRef(L);
@@ -58,14 +58,13 @@
             }
             // context is an optional parameter, so no error if no context parameter sent
             lua_settop(L, 0); // clear the whole stack
-            // printLuaStack(L);
 
             GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:leaderboardID];
             scoreReporter.value = score;
             scoreReporter.context = context;
             NSArray *scores = @[scoreReporter];
             [GKScore reportScores:scores withCompletionHandler:^(NSError *error) {
-                NSLog(@"DEBUG:NSLog [SendCommands.mm] reportScores error = %@", error);
+                // NSLog(@"DEBUG:NSLog [SendCommands.mm] reportScores error = %@", error);
                 const char *description = nil;
                 if(error) {
                     description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription] 
@@ -86,7 +85,7 @@
             lua_settop(L, 0); // clear the whole stack
 
             [[GKLocalPlayer localPlayer] setDefaultLeaderboardIdentifier:leaderboardID completionHandler:^(NSError *error) {
-                NSLog(@"DEBUG:NSLog [SendCommands.mm] setDefaultLeaderboardID error = %@", error);
+                // NSLog(@"DEBUG:NSLog [SendCommands.mm] setDefaultLeaderboardID error = %@", error);
                 const char *description = nil;
                 if(error) {
                     description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription] 
@@ -136,10 +135,10 @@
             GKAchievement *achievementReporter = [[GKAchievement alloc] initWithIdentifier:achievementID];
             achievementReporter.percentComplete = percent;
             achievementReporter.showsCompletionBanner = bannerEnabled;
-            NSLog(@"DEBUG:NSLog [SendCommands.mm] achievementReporter = %@", achievementReporter);
+            // NSLog(@"DEBUG:NSLog [SendCommands.mm] achievementReporter = %@", achievementReporter);
             NSArray *achievements = @[achievementReporter];
             [GKAchievement reportAchievements:achievements withCompletionHandler:^(NSError *error) {
-                NSLog(@"DEBUG:NSLog [SendCommands.mm] reportAchievements error = %@", error);
+                // NSLog(@"DEBUG:NSLog [SendCommands.mm] reportAchievements error = %@", error);
                 const char *description = nil;
                 if(error) {
                     description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription] 
@@ -158,7 +157,7 @@
             lua_settop(L, 0); // clear the whole stack
 
             [GKAchievement resetAchievementsWithCompletionHandler:^(NSError *error) {
-                NSLog(@"DEBUG:NSLog [SendCommands.mm] resetAchievements error = %@", error);
+                // NSLog(@"DEBUG:NSLog [SendCommands.mm] resetAchievements error = %@", error);
                 const char *description = nil;
                 if(error) {
                     description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription] 

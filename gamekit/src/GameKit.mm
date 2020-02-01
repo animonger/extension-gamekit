@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <dmsdk/sdk.h>
 #include "LuaEvents.h"
-#include "LuaStackDump.h"
+// #include "LuaStackDump.h"
 
 #import <GameKit/GameKit.h>
 #import "GameKit.h"
@@ -14,7 +14,7 @@
 #import "ShowCommands.h"
 
 // file-static variables
-static bool is_ARC_Enabled = false; // temp bool for debugging
+// static bool is_ARC_Enabled = false; // temp bool for debugging
 
 
 // class pointers
@@ -23,13 +23,13 @@ SendCommands *sendCommandsPtr;
 GetCommands *getCommandsPtr;
 ShowCommands *showCommandsPtr;
 
-#if __has_feature(objc_arc)
-    is_ARC_Enabled = true;
-#endif
+// #if __has_feature(objc_arc)
+//     is_ARC_Enabled = true;
+// #endif
 
 void gameCenterShowCommand(lua_State *L)
 {
-	NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterShowCommand called");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterShowCommand called");
 	if(gameCenterDelegatePtr.isGameCenterEnabled == YES) {
 		[showCommandsPtr gcShowCommandFromLuaState:L];
 	} else {
@@ -39,7 +39,7 @@ void gameCenterShowCommand(lua_State *L)
 
 void gameCenterGetCommand(lua_State *L)
 {
-	NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterGetCommand called");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterGetCommand called");
 	if(gameCenterDelegatePtr.isGameCenterEnabled == YES) {
 		[getCommandsPtr gcGetCommandFromLuaState:L];
 	} else {
@@ -49,7 +49,7 @@ void gameCenterGetCommand(lua_State *L)
 
 void gameCenterSendCommand(lua_State *L)
 {	
-	NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterSendCommand called");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterSendCommand called");
 	if(gameCenterDelegatePtr.isGameCenterEnabled == YES) {
 		[sendCommandsPtr gcSendCommandFromLuaState:L];
 	} else {
@@ -59,7 +59,7 @@ void gameCenterSendCommand(lua_State *L)
 
 static void presentGameCenterSignInView()
 {
-	NSLog(@"DEBUG:NSLog [GameKit.mm] presentGameCenterSignInView called");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] presentGameCenterSignInView called");
 #if defined(DM_PLATFORM_IOS)
 	// below is needed to present the authenticate view controller in ios.
     [[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:
@@ -74,7 +74,7 @@ static void presentGameCenterSignInView()
 
 void gameCenterShowSignInUI(lua_State *L)
 {
-	NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterShowSignInUI called");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterShowSignInUI called");
 	const char *parameter = lua_tostring( L, 1 );
 	if(strcmp(parameter, "UI") == 0) {
 		if(gameCenterDelegatePtr.authenticateViewController != nil) {
@@ -91,11 +91,11 @@ void gameCenterShowSignInUI(lua_State *L)
 
 static void gameCenterAuthentication(lua_State *L)
 {
-	NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterAuthentication called");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterAuthentication called");
 	// game center authentication for localPlayer
 	[GKLocalPlayer localPlayer].authenticateHandler = ^(UIViewController *viewController, NSError *error) {
-		NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterAuthentication error = %@", error);
-		NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterAuthentication [GKLocalPlayer localPlayer] = %@", [GKLocalPlayer localPlayer]);
+		// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterAuthentication error = %@", error);
+		// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterAuthentication [GKLocalPlayer localPlayer] = %@", [GKLocalPlayer localPlayer]);
 		if(viewController != nil) {
 			// player not logged in yet, send lua event and store game center sign in UI
 			gameCenterDelegatePtr.authenticateViewController = viewController;
@@ -141,12 +141,12 @@ static void gameCenterAuthentication(lua_State *L)
 
 void gameCenterSignIn(lua_State *L)
 {
-	NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterSignIn called");
-	if(is_ARC_Enabled) {
-		NSLog(@"DEBUG:NSLog [GameKit.mm] --------- ARC is ON");
-	} else {
-		NSLog(@"DEBUG:NSLog [GameKit.mm] --------- ARC is OFF");
-	}
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterSignIn called");
+	// if(is_ARC_Enabled) {
+	// 	NSLog(@"DEBUG:NSLog [GameKit.mm] --------- ARC is ON");
+	// } else {
+	// 	NSLog(@"DEBUG:NSLog [GameKit.mm] --------- ARC is OFF");
+	// }
 	
 	bool isRefRegistered = registerGameCenterCallbackLuaRef(L, GC_SIGN_IN_CALLBACK, GC_SIGN_IN_LUA_INSTANCE);
 	// intitialize GameCenterDelegate and commands classes once
@@ -161,7 +161,7 @@ void gameCenterSignIn(lua_State *L)
 		showCommandsPtr = [[ShowCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
 
 	}
-	NSLog(@"DEBUG:NSLog [GameKit.mm] isRefRegistered = %s", isRefRegistered ? "true" : "false");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] isRefRegistered = %s", isRefRegistered ? "true" : "false");
 	if(isRefRegistered) {
 		// call game center authentication for localPlayer
 		gameCenterAuthentication(L);
@@ -170,7 +170,7 @@ void gameCenterSignIn(lua_State *L)
 
 void finalizeGameKit(lua_State *L)
 {
-	NSLog(@"DEBUG:NSLog [GameKit.mm] finalizeGameKit called");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] finalizeGameKit called");
 	unRegisterGameCenterCallbackLuaRef(L, GC_SIGN_IN_CALLBACK, GC_SIGN_IN_LUA_INSTANCE);
 	[[GKLocalPlayer localPlayer] unregisterAllListeners];
 

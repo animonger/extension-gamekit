@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <dmsdk/sdk.h>
 #include "LuaEvents.h"
-#include "LuaStackDump.h"
+// #include "LuaStackDump.h"
 
 #import <GameKit/GameKit.h>
 #import "GetCommands.h"
@@ -33,7 +33,7 @@
         luaL_checktype(L, 2, LUA_TTABLE);
         luaL_checktype(L, 1, LUA_TSTRING);
         const char *command = lua_tostring( L, 1 );
-        NSLog(@"DEBUG:NSLog [GetCommands.mm] gcGetCommandFromLuaState called command = %s", command);
+        // NSLog(@"DEBUG:NSLog [GetCommands.mm] gcGetCommandFromLuaState called command = %s", command);
 ///////////// command = scores
         if(strcmp(command, "scores") == 0) {
             int luaCallbackRef = getTemporaryGameCenterCallbackLuaRef(L);
@@ -81,18 +81,17 @@
                 dmLogError("gc_get() parameters table key 'range' expected");
             }
             lua_settop(L, 0); // clear the whole stack
-            // printLuaStack(L);
 
             GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] init];
             if (leaderboardRequest != nil) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadScores leaderboardRequest = %@", leaderboardRequest);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadScores leaderboardRequest = %@", leaderboardRequest);
                 leaderboardRequest.identifier = leaderboardID;
                 leaderboardRequest.playerScope = playerScope;
                 leaderboardRequest.timeScope = timeScope;
                 leaderboardRequest.range = NSMakeRange(rangeMin, rangeMax);
                 [leaderboardRequest loadScoresWithCompletionHandler:^(NSArray *scores, NSError *error) {
-                    NSLog(@"DEBUG:NSLog [GetCommands.mm] loadScores error = %@", error);
-                    NSLog(@"DEBUG:NSLog [GetCommands.mm] loadScores scores = %@", scores);
+                    // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadScores error = %@", error);
+                    // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadScores scores = %@", scores);
                     if(error) {
                         const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                             errorCode:[error code]] UTF8String];
@@ -137,7 +136,6 @@
                         lua_setfield(L, -2, "scores"); // add scores table to event table
                         // store reference to lua event table
 			            int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                        // printLuaStack(L);
                         sendGameCenterCallbackLuaEvent(L, luaCallbackRef, luaSelfRef, luaTableRef);
                     }
                 }];
@@ -154,8 +152,8 @@
             lua_settop(L, 0); // clear the whole stack
 
             [GKLeaderboard loadLeaderboardsWithCompletionHandler:^(NSArray *leaderboards, NSError *error) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards error = %@", error);
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards leaderboards = %@", leaderboards);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards error = %@", error);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards leaderboards = %@", leaderboards);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -184,7 +182,6 @@
                     lua_setfield(L, -2, "leaderboards"); // add leaderboards table to event table
                     // store reference to lua event table
                     int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                    // printLuaStack(L);
                     sendGameCenterCallbackLuaEvent(L, luaCallbackRef, luaSelfRef, luaTableRef);
                 }
             }];
@@ -196,7 +193,7 @@
             
             [[GKLocalPlayer localPlayer] loadDefaultLeaderboardIdentifierWithCompletionHandler:
              ^(NSString *leaderboardIdentifier, NSError *error) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadDefaultLeaderboardID error = %@", error);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadDefaultLeaderboardID error = %@", error);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -214,7 +211,6 @@
                     lua_setfield( L, -2, "leaderboardID" );
                     // store reference to lua event table
                     int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                    // printLuaStack(L);
                     sendGameCenterCallbackLuaEvent(L, luaCallbackRef, luaSelfRef, luaTableRef);
                  }
              }];
@@ -227,8 +223,8 @@
             lua_settop(L, 0); // clear the whole stack
             
             [GKLeaderboard loadLeaderboardsWithCompletionHandler:^(NSArray *leaderboards, NSError *error) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards error = %@", error);
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards leaderboards = %@", leaderboards);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards error = %@", error);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards leaderboards = %@", leaderboards);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -245,7 +241,7 @@
                             break;
                         }
                     }
-                    NSLog(@"DEBUG:NSLog [GetCommands.mm] selectedLeaderboard = %@", selectedLeaderboard);
+                    // NSLog(@"DEBUG:NSLog [GetCommands.mm] selectedLeaderboard = %@", selectedLeaderboard);
                     if(selectedLeaderboard != nil) {
                         [self.gameCenterDelegatePtr sendImageFromLeaderboard:selectedLeaderboard luaCallbackRef:luaCallbackRef luaSelfRef:luaSelfRef luaState:L];
                     } else {
@@ -262,8 +258,8 @@
             lua_settop(L, 0); // clear the whole stack
 
             [GKLeaderboardSet loadLeaderboardSetsWithCompletionHandler:^(NSArray *leaderboardSets, NSError *error) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets error = %@", error);
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets leaderboardSets = %@", leaderboardSets);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets error = %@", error);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets leaderboardSets = %@", leaderboardSets);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -292,7 +288,6 @@
                     lua_setfield(L, -2, "leaderboardSets"); // add leaderboardSets table to event table
                     // store reference to lua event table
                     int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                    // printLuaStack(L);
                     sendGameCenterCallbackLuaEvent(L, luaCallbackRef, luaSelfRef, luaTableRef);
                 }
             }];
@@ -310,12 +305,12 @@
             } else {
                 dmLogError("parameters table key 'leaderboardSetID' expected");
             }
-            NSLog(@"DEBUG:NSLog [GetCommands.mm] leaderboardSetImage leaderboardSetID = %@", leaderboardSetID);
+            // NSLog(@"DEBUG:NSLog [GetCommands.mm] leaderboardSetImage leaderboardSetID = %@", leaderboardSetID);
             lua_settop(L, 0); // clear the whole stack
             
             [GKLeaderboardSet loadLeaderboardSetsWithCompletionHandler:^(NSArray *leaderboardSets, NSError *error) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets error = %@", error);
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets leaderboardSets = %@", leaderboardSets);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets error = %@", error);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets leaderboardSets = %@", leaderboardSets);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -332,11 +327,11 @@
                             break;
                         }
                     }
-                    NSLog(@"DEBUG:NSLog [GetCommands.mm] selectedLeaderboardSet = %@", selectedLeaderboardSet);
+                    // NSLog(@"DEBUG:NSLog [GetCommands.mm] selectedLeaderboardSet = %@", selectedLeaderboardSet);
                     if(selectedLeaderboardSet != nil) {
                         [selectedLeaderboardSet loadLeaderboardsWithCompletionHandler:^(NSArray *leaderboards, NSError *error) {
-                            NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards error = %@", error);
-                            NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards leaderboards = %@", leaderboards);
+                            // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards error = %@", error);
+                            // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboards leaderboards = %@", leaderboards);
                             if(error) {
                                 const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                                     errorCode:[error code]] UTF8String];
@@ -365,7 +360,6 @@
                                 lua_setfield(L, -2, "leaderboards"); // add leaderboards table to event table
                                 // store reference to lua event table
                                 int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                                // printLuaStack(L);
                                 sendGameCenterCallbackLuaEvent(L, luaCallbackRef, luaSelfRef, luaTableRef);
                             }
                         }];
@@ -390,12 +384,12 @@
             } else {
                 dmLogError("parameters table key 'leaderboardSetID' expected");
             }
-            NSLog(@"DEBUG:NSLog [GetCommands.mm] leaderboardSetImage leaderboardSetID = %@", leaderboardSetID);
+            // NSLog(@"DEBUG:NSLog [GetCommands.mm] leaderboardSetImage leaderboardSetID = %@", leaderboardSetID);
             lua_settop(L, 0); // clear the whole stack
             
             [GKLeaderboardSet loadLeaderboardSetsWithCompletionHandler:^(NSArray *leaderboardSets, NSError *error) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets error = %@", error);
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets leaderboardSets = %@", leaderboardSets);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets error = %@", error);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadLeaderboardSets leaderboardSets = %@", leaderboardSets);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -412,7 +406,7 @@
                             break;
                         }
                     }
-                    NSLog(@"DEBUG:NSLog [GetCommands.mm] selectedLeaderboardSet = %@", selectedLeaderboardSet);
+                    // NSLog(@"DEBUG:NSLog [GetCommands.mm] selectedLeaderboardSet = %@", selectedLeaderboardSet);
                     if(selectedLeaderboardSet != nil) {
                         [self.gameCenterDelegatePtr sendImageFromLeaderboardSet:selectedLeaderboardSet luaCallbackRef:luaCallbackRef luaSelfRef:luaSelfRef luaState:L];
                     } else {
@@ -429,8 +423,8 @@
             lua_settop(L, 0); // clear the whole stack
 
             [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *achievements, NSError *error) {
-                 NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievements error = %@", error);
-                 NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievements achievements = %@", achievements);
+                 // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievements error = %@", error);
+                 // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievements achievements = %@", achievements);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -459,7 +453,6 @@
                     lua_setfield(L, -2, "achievements"); // add achievements table to event table
                     // store reference to lua event table
                     int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                    // printLuaStack(L);
                     sendGameCenterCallbackLuaEvent(L, luaCallbackRef, luaSelfRef, luaTableRef);
                 }
             }];
@@ -470,8 +463,8 @@
             lua_settop(L, 0); // clear the whole stack
 
             [GKAchievementDescription loadAchievementDescriptionsWithCompletionHandler:^(NSArray *descriptions, NSError *error) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievementDescriptions error = %@", error);
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievementDescriptions descriptions = %@", descriptions);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievementDescriptions error = %@", error);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievementDescriptions descriptions = %@", descriptions);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -500,7 +493,6 @@
                     lua_setfield(L, -2, "descriptions"); // add descriptions table to event table
                     // store reference to lua event table
                     int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                    // printLuaStack(L);
                     sendGameCenterCallbackLuaEvent(L, luaCallbackRef, luaSelfRef, luaTableRef);
                 }
             }];
@@ -521,8 +513,8 @@
             lua_settop(L, 0); // clear the whole stack
             
             [GKAchievementDescription loadAchievementDescriptionsWithCompletionHandler:^(NSArray *descriptions, NSError *error) {
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievementDescriptions error = %@", error);
-                NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievementDescriptions descriptions = %@", descriptions);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievementDescriptions error = %@", error);
+                // NSLog(@"DEBUG:NSLog [GetCommands.mm] loadAchievementDescriptions descriptions = %@", descriptions);
                 if(error) {
                     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription]
                         errorCode:[error code]] UTF8String];
@@ -539,7 +531,7 @@
                             break;
                         }
                     }
-                    NSLog(@"DEBUG:NSLog [GetCommands.mm] selectedAchievementDescription = %@", selectedAchievementDescription);
+                    // NSLog(@"DEBUG:NSLog [GetCommands.mm] selectedAchievementDescription = %@", selectedAchievementDescription);
                     if(selectedAchievementDescription != nil) {
                         [self.gameCenterDelegatePtr sendImageFromAchievementDescription:selectedAchievementDescription luaCallbackRef:luaCallbackRef luaSelfRef:luaSelfRef luaState:L];
                     } else {

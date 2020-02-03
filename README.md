@@ -25,7 +25,7 @@ Examples of GameKit Lua calls to Game Center can be found in the [game_center.sc
 ![example app screenshot](DefoldGameKitTestAppScreenShot.png)
 
 ## Support Forum
-[GameKit Defold Extension](https://forum.defold.com/t/apple-gamekit-game-center-extension/64372)  
+Defold [GameKit native extension.](https://forum.defold.com/t/apple-gamekit-game-center-extension/64372)  
 
 # Lua GameKit Reference
 Before you add any Game Center features to your Defold game you must activate Game Center in [App Store Connect.](https://appstoreconnect.apple.com)  

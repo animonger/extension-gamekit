@@ -17,6 +17,13 @@
 // #import GameKit.h to make sure its only included once
 #import "GameKit.h"
 
+static int GC_RealTime(lua_State *L)
+{
+	dmLogUserDebug(">GameKit.cpp< GC_RealTime called");
+	gameCenterRealTimeCommand(L);
+	return 0;
+}
+
 static int GC_Show(lua_State *L)
 {
 	// dmLogUserDebug(">GameKit.cpp< GC_Show called");
@@ -60,6 +67,7 @@ static const luaL_reg Module_methods[] =
 	{"gc_send", GC_Send},
 	{"gc_get", GC_Get},
 	{"gc_show", GC_Show},
+	{"gc_realtime", GC_RealTime},
 	{0, 0}
 };
 

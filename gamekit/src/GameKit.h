@@ -11,3 +11,4 @@ void gameCenterShowSignInUI(lua_State *L);
 void gameCenterSendCommand(lua_State *L);
 void gameCenterGetCommand(lua_State *L);
 void gameCenterShowCommand(lua_State *L);
+void gameCenterRealTimeCommand(lua_State *L);

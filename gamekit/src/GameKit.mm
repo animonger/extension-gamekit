@@ -12,6 +12,7 @@
 #import "SendCommands.h"
 #import "GetCommands.h"
 #import "ShowCommands.h"
+#import "RealTimeCommands.h"
 
 // file-static variables
 // static bool is_ARC_Enabled = false; // temp bool for debugging
@@ -22,10 +23,21 @@ GameCenterDelegate *gameCenterDelegatePtr;
 SendCommands *sendCommandsPtr;
 GetCommands *getCommandsPtr;
 ShowCommands *showCommandsPtr;
+RealTimeCommands *realTimeCommandsPtr;
 
 // #if __has_feature(objc_arc)
 //     is_ARC_Enabled = true;
 // #endif
+
+void gameCenterRealTimeCommand(lua_State *L)
+{
+	NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterRealTimeCommand called");
+	if(gameCenterDelegatePtr.isGameCenterEnabled == YES) {
+		[realTimeCommandsPtr gcRealTimeCommandFromLuaState:L];
+	} else {
+		dmLogError("Game Center not enabled, you must call gc_signin() before you call gc_show()");
+	}
+}
 
 void gameCenterShowCommand(lua_State *L)
 {
@@ -159,6 +171,7 @@ void gameCenterSignIn(lua_State *L)
 		sendCommandsPtr = [[SendCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
         getCommandsPtr = [[GetCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
 		showCommandsPtr = [[ShowCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
+		realTimeCommandsPtr = [[RealTimeCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
 
 	}
 	// NSLog(@"DEBUG:NSLog [GameKit.mm] isRefRegistered = %s", isRefRegistered ? "true" : "false");
@@ -187,6 +200,11 @@ void finalizeGameKit(lua_State *L)
 	if(showCommandsPtr != nil) {
 		[showCommandsPtr release];
     	showCommandsPtr = nil;
+	}
+
+	if(realTimeCommandsPtr != nil) {
+		[realTimeCommandsPtr release];
+    	realTimeCommandsPtr = nil;
 	}
 
 	// release GameCenterDelegate

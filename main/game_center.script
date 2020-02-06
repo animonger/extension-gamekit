@@ -33,6 +33,10 @@ local function on_save_game(self, event)
 	end
 end
 
+local function on_realtime_matchmaker(self, event)
+	print(">game_center< on_realtime_matchmaker event.type = " .. event.type)
+end
+
 local function on_achievements(self, event)
 	print(">game_center< on_achievements event.type = " .. event.type)
 	td.dumpTable(event)
@@ -231,6 +235,7 @@ end
 -- end
 
 function on_message(self, message_id, message, sender)
+	print(">game_center< on_message message_id = " .. message_id)
 	if message_id == hash("gc_signin") then
 		if isGameCenterEnabled == false then
 			-- call gc_signin() only once at the launch of your game to register your lua callback and call 
@@ -293,6 +298,8 @@ function on_message(self, message_id, message, sender)
 			gamekit.gc_get("achievementImage", {achievementID=self.achievement_40pointsId, callback=on_achievements})
 		elseif message_id == hash("send_gc_reset_achvs") then
 			gamekit.gc_send("resetAchievements", {callback=on_achievements})
+		elseif message_id == hash("register_rt_matchmaker_cb") then
+			gamekit.gc_realtime("registerMatchmakerCallback", {callback=on_realtime_matchmaker})
 		elseif message_id == hash("send_gc_game_data") then
 			print(">game_center< send_gc_game_data message.data = " .. message.data)
 			local dataB64 = base64.encode(message.data)

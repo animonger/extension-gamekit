@@ -10,7 +10,9 @@ local ani_caret
 local is_txt_selected
 local txt_string
 local txt_prompt
-local btn_send_game_data
+local btn_send_rt_data_all_players
+local btn_send_rt_data_to_players
+local btn_register_rt_matchmaker_cb
 local btn_default_scale
 local btn_pressed_scale
 
@@ -51,7 +53,9 @@ function init(self)
 	ani_caret = gui.get_node("input/blink")
 	txt_prompt = gui.get_node("input/prompt")
 	reset_input()
-	btn_send_game_data = gui.get_node("send_gc_game_data/button")
+	btn_send_rt_data_all_players = gui.get_node("send_rt_data_all_players/button")
+	btn_send_rt_data_to_players = gui.get_node("send_rt_data_to_players/button")
+	btn_register_rt_matchmaker_cb = gui.get_node("register_rt_matchmaker_cb/button")
 	btn_default_scale = vmath.vector3(1, 1, 1)
 	btn_pressed_scale = vmath.vector3(1.05, 1.3, 1)
 end
@@ -89,8 +93,8 @@ function on_input(self, action_id, action)
 	if action_id == hash("touch") and action.pressed then
 		if gui.pick_node(btn_back, action.x, action.y) then
 			gui.set_scale(btn_back, btn_pressed_scale)
-		elseif gui.pick_node(btn_send_game_data, action.x, action.y) then
-			gui.set_scale(btn_send_game_data, btn_pressed_scale)
+		elseif gui.pick_node(btn_send_rt_data_all_players, action.x, action.y) then
+			gui.set_scale(btn_send_rt_data_all_players, btn_pressed_scale)
 		elseif is_txt_selected == false and gui.pick_node(txt_input, action.x, action.y) then
 			is_txt_selected = true
 			gui.set_enabled(txt_prompt, false)
@@ -121,18 +125,33 @@ function on_input(self, action_id, action)
 			msg.post("#menu_main", "enable")
 			msg.post("#", "disable")
 			gui.hide_keyboard()
-		elseif gui.pick_node(btn_send_game_data, action.x, action.y) then
-			gui.set_scale(btn_send_game_data, btn_default_scale)
+		elseif gui.pick_node(btn_send_rt_data_all_players, action.x, action.y) then
+			gui.set_scale(btn_send_rt_data_all_players, btn_default_scale)
 			local string = gui.get_text(txt_input)
 			local length = string.len(string)
 			if length > 0 then
-				msg.post("/bg#game_center", hash("send_gc_game_data"), {data = string})
+				msg.post("/bg#game_center", hash("send_rt_data_all_players"), {data = string})
 				reset_input()
 			else
 				output.text = output.text .. "ALERT, please input data first\n"
 				msg.post("/menus#scroll_text", hash("set_output_text"))
 			end
 			gui.hide_keyboard()
+		elseif gui.pick_node(btn_send_rt_data_to_players, action.x, action.y) then
+			gui.set_scale(btn_send_rt_data_to_players, btn_default_scale)
+			local string = gui.get_text(txt_input)
+			local length = string.len(string)
+			if length > 0 then
+				msg.post("/bg#game_center", hash("send_rt_data_to_players"), {data = string})
+				reset_input()
+			else
+				output.text = output.text .. "ALERT, please input data first\n"
+				msg.post("/menus#scroll_text", hash("set_output_text"))
+			end
+			gui.hide_keyboard()
+		elseif gui.pick_node(btn_register_rt_matchmaker_cb, action.x, action.y) then
+			gui.set_scale(btn_register_rt_matchmaker_cb, btn_default_scale)
+			msg.post("/bg#game_center", hash("register_rt_matchmaker_cb"))
 		elseif gui.pick_node(btn_cancel, action.x, action.y) then
 			txt_string = ""
 			gui.set_text(txt_input, txt_string)

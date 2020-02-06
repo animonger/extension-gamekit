@@ -3,6 +3,7 @@ local btn_show_gc_signin_ui
 local btn_scores
 local btn_leaderboards
 local btn_achievements
+local btn_realtime_game
 local btn_save_game
 local btn_default_scale
 local btn_pressed_scale
@@ -15,6 +16,7 @@ function init(self)
 	btn_scores = gui.get_node("scores/button")
 	btn_leaderboards = gui.get_node("leaderboards/button")
 	btn_achievements = gui.get_node("achievements/button")
+	btn_realtime_game = gui.get_node("realtime_game/button")
 	btn_save_game = gui.get_node("save_game/button")
 	btn_default_scale = vmath.vector3(1, 1, 1)
 	btn_pressed_scale = vmath.vector3(1.05, 1.3, 1)
@@ -39,6 +41,8 @@ function on_input(self, action_id, action)
 			gui.set_scale(btn_leaderboards, btn_pressed_scale)
 		elseif gui.pick_node(btn_achievements, action.x, action.y) then
 			gui.set_scale(btn_achievements, btn_pressed_scale)
+		elseif gui.pick_node(btn_realtime_game, action.x, action.y) then
+			gui.set_scale(btn_realtime_game, btn_pressed_scale)
 		elseif gui.pick_node(btn_save_game, action.x, action.y) then
 			gui.set_scale(btn_save_game, btn_pressed_scale)
 		end
@@ -61,6 +65,10 @@ function on_input(self, action_id, action)
 		elseif gui.pick_node(btn_achievements, action.x, action.y) then
 			gui.set_scale(btn_achievements, btn_default_scale)
 			msg.post("#menu_achievements", "enable")
+			msg.post("#", "disable")
+		elseif gui.pick_node(btn_realtime_game, action.x, action.y) then
+			gui.set_scale(btn_realtime_game, btn_default_scale)
+			msg.post("#menu_realtime_game", "enable")
 			msg.post("#", "disable")
 		elseif gui.pick_node(btn_save_game, action.x, action.y) then
 			gui.set_scale(btn_save_game, btn_default_scale)

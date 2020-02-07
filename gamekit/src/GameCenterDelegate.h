@@ -14,6 +14,7 @@
 @interface GameCenterDelegate : NSObject <GKGameCenterControllerDelegate>
 // delegate properties
 @property (nonatomic, assign) BOOL isGameCenterEnabled; // game center features are enabled after a localPlayer has been authenticated.
+@property (nonatomic, assign) BOOL isRTMatchmakerCallbackEnabled;
 @property (nonatomic, assign) UIViewController *authenticateViewController;
 
 // delegate methods

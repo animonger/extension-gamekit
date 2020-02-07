@@ -35,7 +35,7 @@ void gameCenterRealTimeCommand(lua_State *L)
 	if(gameCenterDelegatePtr.isGameCenterEnabled == YES) {
 		[realTimeCommandsPtr gcRealTimeCommandFromLuaState:L];
 	} else {
-		dmLogError("Game Center not enabled, you must call gc_signin() before you call gc_show()");
+		dmLogError("Game Center not enabled, you must call gc_signin() before you call gc_realtime()");
 	}
 }
 
@@ -166,6 +166,7 @@ void gameCenterSignIn(lua_State *L)
 		gameCenterDelegatePtr = [[GameCenterDelegate alloc] init];
 		// set GameCenterDelegate BOOLs to NO
 		gameCenterDelegatePtr.isGameCenterEnabled = NO;
+		gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled = NO;
 		
 		// initialize the commands classes with the gameCenterDelegatePtr
 		sendCommandsPtr = [[SendCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];

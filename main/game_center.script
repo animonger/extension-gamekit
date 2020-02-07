@@ -35,6 +35,7 @@ end
 
 local function on_realtime_matchmaker(self, event)
 	print(">game_center< on_realtime_matchmaker event.type = " .. event.type)
+	td.dumpTable(event)
 end
 
 local function on_achievements(self, event)

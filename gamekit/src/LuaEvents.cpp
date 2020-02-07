@@ -6,14 +6,13 @@
 #include "LuaEvents.h"
 // #include "LuaStackDump.h"
 
-// 0 = GC_SIGN_IN_CALLBACK, 1 = GC_SIGN_IN_LUA_INSTANCE
-static int luaRefs[] = {LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF};
-
+// 0 = GC_SIGN_IN_CALLBACK, 1 = GC_SIGN_IN_LUA_INSTANCE, 2 = GC_RT_MATCHMAKER_CALLBACK, 3 = GC_RT_MATCHMAKER_LUA_INSTANCE
+static int luaRefs[] = {LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF};
 
 bool registerGameCenterCallbackLuaRef(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey)
 {
 	// dmLogUserDebug(">LuaEvents.cpp< registerGameCenterCallbackLuaRef called");
-	luaL_checktype(L, 1, LUA_TFUNCTION);
+	luaL_checktype(L, -1, LUA_TFUNCTION);
 	if(luaRefs[cbKey] == LUA_NOREF) {
 		// printLuaStack(L);
 		// store reference to lua callback function

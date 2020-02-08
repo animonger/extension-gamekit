@@ -160,25 +160,28 @@ void gameCenterSignIn(lua_State *L)
 	// 	NSLog(@"DEBUG:NSLog [GameKit.mm] --------- ARC is OFF");
 	// }
 	
-	bool isRefRegistered = registerGameCenterCallbackLuaRef(L, GC_SIGN_IN_CALLBACK, GC_SIGN_IN_LUA_INSTANCE);
 	// intitialize GameCenterDelegate and commands classes once
 	if(gameCenterDelegatePtr == nil) {
-		gameCenterDelegatePtr = [[GameCenterDelegate alloc] init];
-		// set GameCenterDelegate BOOLs to NO
-		gameCenterDelegatePtr.isGameCenterEnabled = NO;
-		gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled = NO;
-		
-		// initialize the commands classes with the gameCenterDelegatePtr
-		sendCommandsPtr = [[SendCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
-        getCommandsPtr = [[GetCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
-		showCommandsPtr = [[ShowCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
-		realTimeCommandsPtr = [[RealTimeCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
+		if(registerGameCenterCallbackLuaRef(L, GC_SIGN_IN_CALLBACK, GC_SIGN_IN_LUA_INSTANCE)) {
+			gameCenterDelegatePtr = [[GameCenterDelegate alloc] init];
+			// set GameCenterDelegate BOOLs to NO
+			gameCenterDelegatePtr.isGameCenterEnabled = NO;
+			gameCenterDelegatePtr.isLocalPlayerListenerRegistered = NO;
+			gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled = NO;
+			
+			// initialize the commands classes with the gameCenterDelegatePtr
+			sendCommandsPtr = [[SendCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
+			getCommandsPtr = [[GetCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
+			showCommandsPtr = [[ShowCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
+			realTimeCommandsPtr = [[RealTimeCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
 
-	}
-	// NSLog(@"DEBUG:NSLog [GameKit.mm] isRefRegistered = %s", isRefRegistered ? "true" : "false");
-	if(isRefRegistered) {
-		// call game center authentication for localPlayer
-		gameCenterAuthentication(L);
+			// call game center authentication for localPlayer
+			gameCenterAuthentication(L);
+		} else {
+			dmLogError("failed to register signin callback");
+		}
+	} else {
+		dmLogError("Game Center is enabled, call gc_signin() only one time after your game launches");
 	}
 }
 

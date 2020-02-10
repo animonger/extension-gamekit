@@ -34,8 +34,11 @@
         luaL_checktype(L, 1, LUA_TSTRING);
         const char *command = lua_tostring( L, 1 );
         NSLog(@"DEBUG:NSLog [RealTimeCommands.mm] gcRealTimeCommandFromLuaState called command = %s", command);
+///////////// command = rttemp
+        if(strcmp(command, "rttemp") == 0) {
+            // realtime listner command here
 ///////////// command = registerMatchmakerCallback
-        if(strcmp(command, "registerMatchmakerCallback") == 0) {
+        } else if(strcmp(command, "registerMatchmakerCallback") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled == NO) {
                 // add error check to registerGameCenterCallback
                 lua_getfield(L, -1, "callback");
@@ -72,6 +75,13 @@
                     errorCode:GKErrorAPINotAvailable] UTF8String];
 			    sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorAPINotAvailable, description);
             }
+///////////// command = unregisterMatchmakerCallback
+        } else if(strcmp(command, "unregisterMatchmakerCallback") == 0) {
+            if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled == YES) {
+                unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE);
+                self.gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled = NO;
+            }
+            lua_settop(L, 0); // clear the whole stack
 ///////////// command = temp
         } else if(strcmp(command, "temp") == 0) {
             // next realtime command

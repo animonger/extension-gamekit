@@ -13,6 +13,7 @@ local txt_prompt
 local btn_send_rt_data_all_players
 local btn_send_rt_data_to_players
 local btn_register_rt_matchmaker_cb
+local btn_unregister_rt_matchmaker_cb
 local btn_default_scale
 local btn_pressed_scale
 
@@ -56,6 +57,7 @@ function init(self)
 	btn_send_rt_data_all_players = gui.get_node("send_rt_data_all_players/button")
 	btn_send_rt_data_to_players = gui.get_node("send_rt_data_to_players/button")
 	btn_register_rt_matchmaker_cb = gui.get_node("register_rt_matchmaker_cb/button")
+	btn_unregister_rt_matchmaker_cb = gui.get_node("unregister_rt_matchmaker_cb/button")
 	btn_default_scale = vmath.vector3(1, 1, 1)
 	btn_pressed_scale = vmath.vector3(1.05, 1.3, 1)
 end
@@ -95,6 +97,12 @@ function on_input(self, action_id, action)
 			gui.set_scale(btn_back, btn_pressed_scale)
 		elseif gui.pick_node(btn_send_rt_data_all_players, action.x, action.y) then
 			gui.set_scale(btn_send_rt_data_all_players, btn_pressed_scale)
+		elseif gui.pick_node(btn_send_rt_data_to_players, action.x, action.y) then
+			gui.set_scale(btn_send_rt_data_to_players, btn_pressed_scale)
+		elseif gui.pick_node(btn_register_rt_matchmaker_cb, action.x, action.y) then
+			gui.set_scale(btn_register_rt_matchmaker_cb, btn_pressed_scale)
+		elseif gui.pick_node(btn_unregister_rt_matchmaker_cb, action.x, action.y) then
+			gui.set_scale(btn_unregister_rt_matchmaker_cb, btn_pressed_scale)
 		elseif is_txt_selected == false and gui.pick_node(txt_input, action.x, action.y) then
 			is_txt_selected = true
 			gui.set_enabled(txt_prompt, false)
@@ -152,6 +160,9 @@ function on_input(self, action_id, action)
 		elseif gui.pick_node(btn_register_rt_matchmaker_cb, action.x, action.y) then
 			gui.set_scale(btn_register_rt_matchmaker_cb, btn_default_scale)
 			msg.post("/bg#game_center", hash("register_rt_matchmaker_cb"))
+		elseif gui.pick_node(btn_unregister_rt_matchmaker_cb, action.x, action.y) then
+			gui.set_scale(btn_unregister_rt_matchmaker_cb, btn_default_scale)
+			msg.post("/bg#game_center", hash("unregister_rt_matchmaker_cb"))
 		elseif gui.pick_node(btn_cancel, action.x, action.y) then
 			txt_string = ""
 			gui.set_text(txt_input, txt_string)

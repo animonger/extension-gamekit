@@ -301,6 +301,9 @@ function on_message(self, message_id, message, sender)
 			gamekit.gc_send("resetAchievements", {callback=on_achievements})
 		elseif message_id == hash("register_rt_matchmaker_cb") then
 			gamekit.gc_realtime("registerMatchmakerCallback", {callback=on_realtime_matchmaker})
+		elseif message_id == hash("unregister_rt_matchmaker_cb") then
+			-- parameters table expected even though there are no parameters to send
+			gamekit.gc_realtime("unregisterMatchmakerCallback", {})
 		elseif message_id == hash("send_gc_game_data") then
 			print(">game_center< send_gc_game_data message.data = " .. message.data)
 			local dataB64 = base64.encode(message.data)

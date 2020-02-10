@@ -43,7 +43,12 @@
                     if(registerGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE)) {
                         lua_settop(L, 0); // clear the whole stack
                         
-                        // register matchmaker objective c code here
+                        // register listener for localPlayer only once for Invite Real-Time matchmaking Events,
+                        // Challenge Events and Turn-Based Events
+                        if (self.gameCenterDelegatePtr.isLocalPlayerListenerRegistered == NO) {
+                            [[GKLocalPlayer localPlayer] registerListener:self.gameCenterDelegatePtr];
+                            self.gameCenterDelegatePtr.isLocalPlayerListenerRegistered = YES;
+                        }
 
                         lua_newtable(L); // create lua table for event
                         // push items and set feilds

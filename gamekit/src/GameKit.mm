@@ -189,6 +189,10 @@ void finalizeGameKit(lua_State *L)
 {
 	// NSLog(@"DEBUG:NSLog [GameKit.mm] finalizeGameKit called");
 	unRegisterGameCenterCallbackLuaRef(L, GC_SIGN_IN_CALLBACK, GC_SIGN_IN_LUA_INSTANCE);
+	if(gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled == YES) {
+		unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE);
+		gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled = NO;
+	}
 	[[GKLocalPlayer localPlayer] unregisterAllListeners];
 
 	// release the Commands

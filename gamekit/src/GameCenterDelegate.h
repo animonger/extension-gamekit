@@ -11,7 +11,7 @@
 
 //@interface GameCenterDelegate : NSObject <GKGameCenterControllerDelegate, GKLocalPlayerListener, GKMatchDelegate, GKMatchmakerViewControllerDelegate, GKTurnBasedMatchmakerViewControllerDelegate>
 // add to @interface other delegates above as they are needed
-@interface GameCenterDelegate : NSObject <GKGameCenterControllerDelegate>
+@interface GameCenterDelegate : NSObject <GKGameCenterControllerDelegate, GKLocalPlayerListener>
 // delegate properties
 @property (nonatomic, assign) BOOL isGameCenterEnabled; // game center features are enabled after a localPlayer has been authenticated.
 @property (nonatomic, assign) BOOL isLocalPlayerListenerRegistered;

@@ -167,7 +167,8 @@ void gameCenterSignIn(lua_State *L)
 			// set GameCenterDelegate BOOLs to NO
 			gameCenterDelegatePtr.isGameCenterEnabled = NO;
 			gameCenterDelegatePtr.isLocalPlayerListenerRegistered = NO;
-			gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled = NO;
+			gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = NO;
+			gameCenterDelegatePtr.isMatchStarted = NO;
 			
 			// initialize the commands classes with the gameCenterDelegatePtr
 			sendCommandsPtr = [[SendCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];
@@ -189,9 +190,9 @@ void finalizeGameKit(lua_State *L)
 {
 	// NSLog(@"DEBUG:NSLog [GameKit.mm] finalizeGameKit called");
 	unRegisterGameCenterCallbackLuaRef(L, GC_SIGN_IN_CALLBACK, GC_SIGN_IN_LUA_INSTANCE);
-	if(gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled == YES) {
+	if(gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
 		unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE);
-		gameCenterDelegatePtr.isRTMatchmakerCallbackEnabled = NO;
+		gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = NO;
 	}
 	[[GKLocalPlayer localPlayer] unregisterAllListeners];
 

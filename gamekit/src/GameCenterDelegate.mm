@@ -35,6 +35,64 @@
 #endif
 }
 
+// the player has cancelled matchmaking
+- (void)matchmakerViewControllerWasCancelled:(GKMatchmakerViewController *)matchmakerViewController
+{
+    NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewControllerWasCancelled called");
+#if defined(DM_PLATFORM_IOS)
+    [matchmakerViewController dismissViewControllerAnimated:YES completion:nil];
+#else // osx platform
+    [[GKDialogController sharedDialogController] dismiss: matchmakerViewController];
+#endif
+	[matchmakerViewController release];
+    // self.addPlayersUI = NO; // track this boolean in old corona extension
+}
+
+// a peer-to-peer real-time match has been found, the game should start
+- (void)matchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController didFindMatch:(GKMatch *)match
+{
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewController didFindMatch called");
+    // [matchmakerViewController dismissViewControllerAnimated:YES completion:nil];
+    // [matchmakerViewController release];
+    // self.currentMatch = [match retain]; // retain the match object
+    // self.currentMatch.delegate = self;
+    // if (self.matchStarted == NO && self.currentMatch.expectedPlayerCount == 0) {
+    //     [self sendLuaRealTimeMatchStartedEventMatch:self.currentMatch];
+    // } else if ((self.matchStarted == YES) && (self.addPlayersUI == YES) &&
+    //            (self.currentMatch.expectedPlayerCount == 0)) {
+    //     [self sendLuaRealTimeMatchStartedEventMatch:self.currentMatch];
+    // }
+}
+
+// matchmaking has failed with an error
+- (void)matchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController didFailWithError:(NSError *)error
+{
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewController didFailWithError called");
+    // [matchmakerViewController dismissViewControllerAnimated:YES completion:nil];
+    // [matchmakerViewController release];
+    // if ( self.currentMatch != nil ) {
+    //     self.currentMatch.delegate = nil;
+    //     [self.currentMatch release];
+    //     self.currentMatch = nil;
+    // }
+    // self.addPlayersUI = NO;
+    // [self sendLuaEventErrorDescription:[error localizedDescription]
+    //                          errorCode:[error code]
+    //                        listenerRef:self.realTimeMatchmakerListenerRef
+    //                  deleteListenerRef:NO];
+}
+
+- (void)presentGCMatchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController
+{
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] presentGCMatchmakerViewController called");
+#if defined(DM_PLATFORM_IOS)
+	[[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:matchmakerViewController animated:YES completion:nil];
+#else // osx platform
+	[GKDialogController sharedDialogController].parentWindow = [[NSApplication sharedApplication] mainWindow];
+	[[GKDialogController sharedDialogController] presentViewController:matchmakerViewController];
+#endif
+}
+
 - (NSString *)stringAppendErrorDescription:(NSString *)errorDescription errorCode:(NSInteger)errorCode
 {
 	NSString *description = nil;        

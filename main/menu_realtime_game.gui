@@ -1217,10 +1217,10 @@ nodes {
     w: 1.0
   }
   type: TYPE_TEMPLATE
-  id: "get_gc_lb_sets"
+  id: "show_gc_rt_match_ui"
   layer: ""
   inherit_alpha: true
-  alpha: 0.5
+  alpha: 1.0
   template: "/assets/templates/button_template.gui"
   template_node_child: false
 }
@@ -1258,12 +1258,12 @@ nodes {
   type: TYPE_BOX
   blend_mode: BLEND_MODE_ALPHA
   texture: "button_assets/button_bg_orange"
-  id: "get_gc_lb_sets/button"
+  id: "show_gc_rt_match_ui/button"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
   adjust_mode: ADJUST_MODE_FIT
-  parent: "get_gc_lb_sets"
+  parent: "show_gc_rt_match_ui"
   layer: ""
   inherit_alpha: true
   slice9 {
@@ -1313,9 +1313,9 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "Get GC Sets"
+  text: "Show GC RT Match UI"
   font: "button_font"
-  id: "get_gc_lb_sets/text"
+  id: "show_gc_rt_match_ui/text"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
@@ -1333,7 +1333,7 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  parent: "get_gc_lb_sets"
+  parent: "show_gc_rt_match_ui"
   layer: ""
   inherit_alpha: true
   alpha: 1.0

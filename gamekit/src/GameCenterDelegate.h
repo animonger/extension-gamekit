@@ -11,15 +11,17 @@
 
 //@interface GameCenterDelegate : NSObject <GKGameCenterControllerDelegate, GKLocalPlayerListener, GKMatchDelegate, GKMatchmakerViewControllerDelegate, GKTurnBasedMatchmakerViewControllerDelegate>
 // add to @interface other delegates above as they are needed
-@interface GameCenterDelegate : NSObject <GKGameCenterControllerDelegate, GKLocalPlayerListener>
+@interface GameCenterDelegate : NSObject <GKGameCenterControllerDelegate, GKLocalPlayerListener, GKMatchDelegate, GKMatchmakerViewControllerDelegate>
 // delegate properties
 @property (nonatomic, assign) BOOL isGameCenterEnabled; // game center features are enabled after a localPlayer has been authenticated.
 @property (nonatomic, assign) BOOL isLocalPlayerListenerRegistered;
-@property (nonatomic, assign) BOOL isRTMatchmakerCallbackEnabled;
+@property (nonatomic, assign) BOOL isRTMatchmakerCallbackRegistered;
+@property (nonatomic, assign) BOOL isMatchStarted;
 @property (nonatomic, assign) UIViewController *authenticateViewController;
 
 // delegate methods
 - (void)presentGameCenterViewController:(GKGameCenterViewController *)gameCenterViewController;
+- (void)presentGCMatchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController;
 - (NSString *)stringAppendErrorDescription:(NSString *)errorDescription errorCode:(NSInteger)errorCode;
 - (NSInteger)newLuaTableFromScoreObject:(GKScore *)score luaState:(lua_State *)L;
 - (NSInteger)newLuaTableFromLeaderboardObject:(GKLeaderboard *)leaderboard luaState:(lua_State *)L;

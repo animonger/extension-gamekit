@@ -1,5 +1,5 @@
 [project]
-title = Defold GameKit Test
+title = Defold Test GameKit
 version = 1.0
 
 [bootstrap]
@@ -40,10 +40,10 @@ launch_image_1125x2436 = /assets/launch_images/ios_launch_1125x2436.png
 launch_image_2436x1125 = /assets/launch_images/ios_launch_2436x1125.png
 launch_image_1668x2224 = /assets/launch_images/ios_launch_1668x2224.png
 launch_image_2224x1668 = /assets/launch_images/ios_launch_2224x1668.png
-bundle_identifier = com.animonger.defoldgamekittest
+bundle_identifier = com.animonger.defoldtestgamekit
 
 [osx]
-bundle_identifier = com.animonger.defoldgamekittest
+bundle_identifier = com.animonger.defoldtestgamekit
 
 [android]
 app_icon_36x36 = /assets/app_icons/icon_36.png

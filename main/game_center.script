@@ -216,11 +216,12 @@ end
 function init(self)
 	isGameCenterEnabled = false
 	isGameCenterSignInUiEnabled = false
-	self.default_leaderboardID = "com.animonger.defoldgamekittest.leaderboard"
-	self.second_leaderboardID = "com.animonger.defoldgamekittest.second.leaderboard"
-	self.first_leaderboardSetID = "com.animonger.defoldgamekittest.leaderboardset"
-	self.achievement_40pointsId = "com.animonger.defoldgamekittest.achievement_40points"
-	self.achievement_60pointsId = "com.animonger.defoldgamekittest.achievement_60points"
+	-- change the following IDs to your IDs you setup for Game Center on App Store Connect
+	self.default_leaderboardID = "com.animonger.defoldtestgamekit.default.leaderboard"
+	self.second_leaderboardID = "com.animonger.defoldtestgamekit.second.leaderboard"
+	self.first_leaderboardSetID = "com.animonger.defoldtestgamekit.first.leaderboardset"
+	self.achievement_40pointsId = "com.animonger.defoldtestgamekit.achievement.40points"
+	self.achievement_60pointsId = "com.animonger.defoldtestgamekit.achievement.60points"
 	set_output_text_hash = hash("set_output_text")
 end
 

@@ -126,7 +126,7 @@
                     // playerGroup is an optional parameter so no error if none exists
                     lua_pop(L, 1);
 
-                    uint32_t playerAttributes = 0;
+                    uint32_t playerAttributes = 0xFFFFFFFF;
                     BOOL playerAttributesEnabled = NO;
                     lua_getfield(L, -1, "playerAttributes");
                     if(lua_type(L, -1) == LUA_TNUMBER) {
@@ -153,6 +153,11 @@
                     if (matchmakerViewController != nil) {
                         matchmakerViewController.matchmakerDelegate = self.gameCenterDelegatePtr;
                         [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController];
+                    } else {
+                        lua_settop(L, 0); // clear the whole stack
+                        const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"failed to alloc GKMatchmakerViewController with GKMatchRequest"
+                            errorCode:GKErrorAPINotAvailable] UTF8String];
+			            sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorAPINotAvailable, description);
                     }
                 } else {
                     lua_settop(L, 0); // clear the whole stack

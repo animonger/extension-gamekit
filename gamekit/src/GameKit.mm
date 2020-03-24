@@ -169,6 +169,8 @@ void gameCenterSignIn(lua_State *L)
 			gameCenterDelegatePtr.isLocalPlayerListenerRegistered = NO;
 			gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = NO;
 			gameCenterDelegatePtr.isMatchStarted = NO;
+			gameCenterDelegatePtr.isPlayersAdded = NO;
+			gameCenterDelegatePtr.isAddPlayersUI = NO;
 			
 			// initialize the commands classes with the gameCenterDelegatePtr
 			sendCommandsPtr = [[SendCommands alloc] initWithGameCenterDelegate:gameCenterDelegatePtr];

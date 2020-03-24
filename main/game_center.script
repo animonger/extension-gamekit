@@ -36,6 +36,16 @@ end
 local function on_realtime_matchmaker(self, event)
 	print(">game_center< on_realtime_matchmaker event.type = " .. event.type)
 	td.dumpTable(event)
+	if event.type == "error" then
+		output.text = output.text .. "on_realtime_matchmaker event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.errorCode = " .. tostring(event.errorCode) .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "success" then
+		output.text = output.text .. "on_realtime_matchmaker event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	end
 end
 
 local function on_achievements(self, event)
@@ -262,6 +272,7 @@ function on_message(self, message_id, message, sender)
 	elseif isGameCenterEnabled == true then
 		if message_id == hash("send_gc_score") then
 			--print(">game_center< send_gc_score message.score = " .. tostring(message.score))
+			-- context is an optional paramenter table key.
 			gamekit.gc_send("score", {leaderboardID=self.default_leaderboardID, value=message.score, context=42, callback=on_scores})
 			--gamekit.gc_send("score", {leaderboardID=self.second_leaderboardID, value=message.score, context=9, callback=on_scores})
 		elseif message_id == hash("get_gc_scores") then
@@ -306,7 +317,8 @@ function on_message(self, message_id, message, sender)
 			-- parameters table expected even though there are no parameters to send
 			gamekit.gc_realtime("unregisterMatchmakerCallback", {})
 		elseif message_id == hash("show_gc_rt_match_ui") then
-			gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=3, defaultNumPlayers=3, playerGroup=3, playerAttributes=0xFFFF0000})
+			-- playerGroup and playerAttributes are optional paramenter table keys.
+			gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2, playerGroup=0, playerAttributes=0xFFFFFFFF})
 		elseif message_id == hash("send_gc_game_data") then
 			print(">game_center< send_gc_game_data message.data = " .. message.data)
 			local dataB64 = base64.encode(message.data)

@@ -20,7 +20,6 @@ function init(self)
 	btn_realtime_game = gui.get_node("realtime_game/button")
 	btn_default_scale = vmath.vector3(1, 1, 1)
 	btn_pressed_scale = vmath.vector3(1.05, 1.3, 1)
-	gui.set_enabled(btn_realtime_game, false) -- temp button disabled for save game release
 end
 
 -- function on_message(self, message_id, message, sender)

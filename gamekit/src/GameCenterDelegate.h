@@ -17,7 +17,10 @@
 @property (nonatomic, assign) BOOL isLocalPlayerListenerRegistered;
 @property (nonatomic, assign) BOOL isRTMatchmakerCallbackRegistered;
 @property (nonatomic, assign) BOOL isMatchStarted;
+@property (nonatomic, assign) BOOL isPlayersAdded; // old addPlayers
+@property (nonatomic, assign) BOOL isAddPlayersUI; // old addPlayersUI
 @property (nonatomic, assign) UIViewController *authenticateViewController;
+@property (nonatomic, assign) GKMatch *currentMatch;
 
 // delegate methods
 - (void)presentGameCenterViewController:(GKGameCenterViewController *)gameCenterViewController;

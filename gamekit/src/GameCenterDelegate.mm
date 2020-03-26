@@ -10,7 +10,10 @@
 #import "GameCenterDelegate.h"
 #import "ImageBitmap.h"
 
-@implementation GameCenterDelegate
+@implementation GameCenterDelegate 
+{
+	lua_State *luaStatePtr; // Objective-C pointer to the current Lua state
+}
 
 // hide game center leaderboards and achievements UI
 - (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController
@@ -52,7 +55,6 @@
 - (void)matchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController didFindMatch:(GKMatch *)match
 {
 	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewController didFindMatch called");
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] match = %@", match);
 #if defined(DM_PLATFORM_IOS)
     [matchmakerViewController dismissViewControllerAnimated:YES completion:nil];
 #else // osx platform
@@ -60,14 +62,9 @@
 #endif
 	[matchmakerViewController release];
 
-    // Look into addPlayersUI, currentMatch, matchStarted in old corona extension
-
-    self.currentMatch = [match retain]; // retain the match object
-    self.currentMatch.delegate = self;
-    if (self.isMatchStarted == NO && self.currentMatch.expectedPlayerCount == 0) {
-        //[self sendLuaRealTimeMatchStartedEventMatch:self.currentMatch];
-    } else if ((self.isMatchStarted == YES) && (self.isAddPlayersUI == YES) &&
-               (self.currentMatch.expectedPlayerCount == 0)) {
+    if (self.isMatchStarted == NO && match.expectedPlayerCount == 0) {
+        [self sendStartedRealTimeMatch:match luaState:luaStatePtr];
+    } else if ((self.isMatchStarted == YES) && (self.isAddPlayersUI == YES) && (match.expectedPlayerCount == 0)) {
 		// send lua event
         //[self sendLuaRealTimeMatchStartedEventMatch:self.currentMatch];
     }
@@ -98,9 +95,10 @@
     //                  deleteListenerRef:NO];
 }
 
-- (void)presentGCMatchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController
+- (void)presentGCMatchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController luaState:(lua_State *)L
 {
 	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] presentGCMatchmakerViewController called");
+	luaStatePtr = L;
 #if defined(DM_PLATFORM_IOS)
 	[[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:matchmakerViewController animated:YES completion:nil];
 #else // osx platform
@@ -266,6 +264,43 @@
 		dmLogError("parameters table key 'timeScope' expected");
 	}
 	return timeScope;
+}
+
+- (void)sendStartedRealTimeMatch:(GKMatch *)match luaState:(lua_State *)L
+{
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendStartedRealTimeMatch match = %@", match);
+	NSInteger playersCount = [match players].count;
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] playersCount = %zd", playersCount);
+	lua_newtable(L); // create lua table for event
+	// push items and set feilds
+	lua_pushstring(L, "matchStarted");
+	lua_setfield(L, -2, "type");
+	lua_pushinteger(L, playersCount);
+	lua_setfield(L, -2, "playersCount");
+	lua_newtable(L); // create lua table for players
+
+	int i = 1;
+	for (GKPlayer *player in [match players]) {
+		lua_pushinteger(L, i);
+		lua_newtable(L); // create lua table for player object
+		lua_pushstring(L, [[player alias] UTF8String]);
+		lua_setfield(L, -2, "playerAlias");
+		lua_pushstring(L, [[player displayName] UTF8String]);
+		lua_setfield(L, -2, "playerDisplayName");
+		lua_pushstring(L, [[player playerID] UTF8String]);
+		lua_setfield(L, -2, "playerID");
+		lua_settable(L, -3);
+        i++;
+	}
+	lua_setfield(L, -2, "players"); // add players table to event table
+
+	// store reference to lua event table
+	int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
+	sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, luaTableRef);
+	
+	self.currentMatch = [match retain]; // retain the match object
+    self.currentMatch.delegate = self;
+	// is match started = YES ?
 }
 
 - (NSInteger)newLuaTableFromBitmap:(unsigned char *)bitmap width:(size_t)width height:(size_t)height luaState:(lua_State *)L

@@ -24,7 +24,7 @@
 
 // delegate methods
 - (void)presentGameCenterViewController:(GKGameCenterViewController *)gameCenterViewController;
-- (void)presentGCMatchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController;
+- (void)presentGCMatchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController luaState:(lua_State *)L;
 - (NSString *)stringAppendErrorDescription:(NSString *)errorDescription errorCode:(NSInteger)errorCode;
 - (NSInteger)newLuaTableFromScoreObject:(GKScore *)score luaState:(lua_State *)L;
 - (NSInteger)newLuaTableFromLeaderboardObject:(GKLeaderboard *)leaderboard luaState:(lua_State *)L;
@@ -33,6 +33,7 @@
 - (NSInteger)newLuaTableFromAchievementDescriptionObject:(GKAchievementDescription *)achvDescription luaState:(lua_State *)L;
 - (NSString *)getLeaderboardIDFromLuaState:(lua_State *)L;
 - (GKLeaderboardTimeScope)getLeaderboardTimeScopeFromLuaState:(lua_State *)L;
+- (void)sendStartedRealTimeMatch:(GKMatch *)match luaState:(lua_State *)L;
 - (NSInteger)newLuaTableFromBitmap:(unsigned char *)bitmap width:(size_t)width height:(size_t)height luaState:(lua_State *)L;
 - (void)sendImageFromLeaderboard:(GKLeaderboard *)leaderboard luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L;
 - (void)sendImageFromLeaderboardSet:(GKLeaderboardSet *)leaderboardSet luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L;

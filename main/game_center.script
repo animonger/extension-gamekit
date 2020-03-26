@@ -273,14 +273,14 @@ function on_message(self, message_id, message, sender)
 		if message_id == hash("send_gc_score") then
 			--print(">game_center< send_gc_score message.score = " .. tostring(message.score))
 			-- context is an optional paramenter table key.
-			gamekit.gc_send("score", {leaderboardID=self.default_leaderboardID, value=message.score, context=42, callback=on_scores})
-			--gamekit.gc_send("score", {leaderboardID=self.second_leaderboardID, value=message.score, context=9, callback=on_scores})
+			--gamekit.gc_send("score", {leaderboardID=self.default_leaderboardID, value=message.score, context=42, callback=on_scores})
+			gamekit.gc_send("score", {leaderboardID=self.second_leaderboardID, value=message.score, callback=on_scores})
 		elseif message_id == hash("get_gc_scores") then
-			gamekit.gc_get("scores", {leaderboardID=self.default_leaderboardID, playerScope="Global", timeScope="AllTime", range={1,5}, callback=on_scores})
-			--gamekit.gc_get("scores", {leaderboardID=self.second_leaderboardID, playerScope="Global", timeScope="AllTime", range={1,6}, callback=on_scores})
+			--gamekit.gc_get("scores", {leaderboardID=self.default_leaderboardID, playerScope="Global", timeScope="AllTime", range={1,5}, callback=on_scores})
+			gamekit.gc_get("scores", {leaderboardID=self.second_leaderboardID, playerScope="Global", timeScope="AllTime", range={1,6}, callback=on_scores})
 		elseif message_id == hash("show_gc_lbs_ui") then
-			gamekit.gc_show("leaderboardsUI", {leaderboardID=self.default_leaderboardID, timeScope="AllTime"})
-			--gamekit.gc_show("leaderboardsUI", {leaderboardID=self.second_leaderboardID, timeScope="AllTime"})
+			--gamekit.gc_show("leaderboardsUI", {leaderboardID=self.default_leaderboardID, timeScope="AllTime"})
+			gamekit.gc_show("leaderboardsUI", {leaderboardID=self.second_leaderboardID, timeScope="AllTime"})
 		elseif message_id == hash("get_gc_leaderboards") then
 			gamekit.gc_get("leaderboards", {callback=on_leaderboards})
 		elseif message_id == hash("get_gc_default_lb_id") then
@@ -298,8 +298,8 @@ function on_message(self, message_id, message, sender)
 		elseif message_id == hash("get_gc_lb_set_image") then
 			gamekit.gc_get("leaderboardSetImage", {leaderboardSetID=self.first_leaderboardSetID, callback=on_leaderboards})
 		elseif message_id == hash("send_gc_achievement") then
-			--gamekit.gc_send("achievementProgress", {achievementID=self.achievement_40pointsId, percentComplete=message.percent, showsCompletionBanner=true, callback=on_achievements})
-			gamekit.gc_send("achievementProgress", {achievementID=self.achievement_60pointsId, percentComplete=message.percent, showsCompletionBanner=true, callback=on_achievements})
+			gamekit.gc_send("achievementProgress", {achievementID=self.achievement_40pointsId, percentComplete=message.percent, showsCompletionBanner=true, callback=on_achievements})
+			--gamekit.gc_send("achievementProgress", {achievementID=self.achievement_60pointsId, percentComplete=message.percent, showsCompletionBanner=true, callback=on_achievements})
 		elseif message_id == hash("show_gc_achvs_ui") then
 			-- parameters table expected even though there are no parameters to send
 			gamekit.gc_show("achievementsUI", {})
@@ -318,7 +318,8 @@ function on_message(self, message_id, message, sender)
 			gamekit.gc_realtime("unregisterMatchmakerCallback", {})
 		elseif message_id == hash("show_gc_rt_match_ui") then
 			-- playerGroup and playerAttributes are optional paramenter table keys.
-			gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2, playerGroup=0, playerAttributes=0xFFFFFFFF})
+			--gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2, playerGroup=42, playerAttributes=0xFFFF0000})
+			gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2})
 		elseif message_id == hash("send_gc_game_data") then
 			print(">game_center< send_gc_game_data message.data = " .. message.data)
 			local dataB64 = base64.encode(message.data)

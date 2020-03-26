@@ -105,7 +105,7 @@
                     } else {
                         dmLogError("parameters table key 'maxPlayers' expected");
                     }
-                    
+
                     NSUInteger defaultNumPlayers = 0;
                     lua_getfield(L, -1, "defaultNumPlayers");
                     if(lua_type(L, -1) != LUA_TNIL) {
@@ -115,7 +115,7 @@
                     } else {
                         dmLogError("parameters table key 'defaultNumPlayers' expected");
                     }
-                    
+
                     NSUInteger playerGroup = 0;
                     BOOL playerGroupEnabled = NO;
                     lua_getfield(L, -1, "playerGroup");
@@ -152,7 +152,7 @@
                     
                     if (matchmakerViewController != nil) {
                         matchmakerViewController.matchmakerDelegate = self.gameCenterDelegatePtr;
-                        [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController];
+                        [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController luaState:L];
                     } else {
                         lua_settop(L, 0); // clear the whole stack
                         const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"failed to alloc GKMatchmakerViewController with GKMatchRequest"

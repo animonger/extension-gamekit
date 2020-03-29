@@ -12,7 +12,7 @@
 
 @implementation GameCenterDelegate 
 {
-	lua_State *luaStatePtr; // Objective-C pointer to the current Lua state
+	lua_State *_luaStatePtr;
 }
 
 // hide game center leaderboards and achievements UI
@@ -48,7 +48,6 @@
     [[GKDialogController sharedDialogController] dismiss: matchmakerViewController];
 #endif
 	[matchmakerViewController release];
-    self.isAddPlayersUI = NO;
 }
 
 // a peer-to-peer real-time match has been found, the game should start
@@ -63,10 +62,33 @@
 	[matchmakerViewController release];
 
     if (self.isMatchStarted == NO && match.expectedPlayerCount == 0) {
-        [self sendStartedRealTimeMatch:match luaState:luaStatePtr];
-    } else if ((self.isMatchStarted == YES) && (self.isAddPlayersUI == YES) && (match.expectedPlayerCount == 0)) {
-		// send lua event
-        //[self sendLuaRealTimeMatchStartedEventMatch:self.currentMatch];
+        //[self sendStartedRealTimeMatch:match luaState:_luaStatePtr];
+		self.currentMatch = [match retain]; // retain the match object
+		self.currentMatch.delegate = self;
+		self.isMatchStarted = YES;
+		NSInteger playersCount = [match players].count;
+		//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] playersCount = %zd", playersCount);
+
+		lua_newtable(_luaStatePtr); // create lua table for event
+		// push items and set feilds
+		lua_pushstring(_luaStatePtr, "matchStarted");
+		lua_setfield(_luaStatePtr, -2, "type");
+		lua_pushinteger(_luaStatePtr, playersCount);
+		lua_setfield(_luaStatePtr, -2, "playersCount");
+		lua_newtable(_luaStatePtr); // create lua table for players
+
+		int i = 1;
+		for (GKPlayer *player in [match players]) {
+			lua_pushinteger(_luaStatePtr, i);
+			[self newLuaTableFromPlayerObject:player luaState:_luaStatePtr];
+			lua_settable(_luaStatePtr, -3);
+			i++;
+		}
+		lua_setfield(_luaStatePtr, -2, "players"); // add players table to event table
+
+		// store reference to lua event table
+		int luaTableRef = dmScript::Ref(_luaStatePtr, LUA_REGISTRYINDEX);
+		sendGameCenterRegisteredCallbackLuaEvent(_luaStatePtr, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, luaTableRef);
     }
 }
 
@@ -80,25 +102,36 @@
     [[GKDialogController sharedDialogController] dismiss: matchmakerViewController];
 #endif
 	[matchmakerViewController release];
-	
-	self.isAddPlayersUI = NO;
 
-    // if ( self.currentMatch != nil ) {
-    //     self.currentMatch.delegate = nil;
-    //     [self.currentMatch release];
-    //     self.currentMatch = nil;
-    // }
-    // self.addPlayersUI = NO;
-    // [self sendLuaEventErrorDescription:[error localizedDescription]
-    //                          errorCode:[error code]
-    //                        listenerRef:self.realTimeMatchmakerListenerRef
-    //                  deleteListenerRef:NO];
+    if(self.currentMatch != nil) {
+        self.currentMatch.delegate = nil;
+        [self.currentMatch release];
+        self.currentMatch = nil;
+    }
+
+	const char *description = [[self stringAppendErrorDescription:[error localizedDescription] errorCode:[error code]] UTF8String];
+	sendGameCenterRegisteredCallbackLuaErrorEvent(_luaStatePtr, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, [error code], description);
 }
+
+// real-time invite events
+// called on localPlayer device after localPlayer accepts friend invite
+- (void)player:(GKPlayer *)player didAcceptInvite:(GKInvite *)invite
+{
+    self.currentInvite = [invite retain]; // retain the invite object
+
+	lua_newtable(_luaStatePtr); // create lua table for event
+	lua_pushstring(_luaStatePtr, "acceptedInvite");
+	lua_setfield(_luaStatePtr, -2, "type");
+	// store reference to lua event table
+	int luaTableRef = dmScript::Ref(_luaStatePtr, LUA_REGISTRYINDEX);
+	sendGameCenterRegisteredCallbackLuaEvent(_luaStatePtr, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, luaTableRef);
+}
+
 
 - (void)presentGCMatchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController luaState:(lua_State *)L
 {
 	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] presentGCMatchmakerViewController called");
-	luaStatePtr = L;
+	_luaStatePtr = L;
 #if defined(DM_PLATFORM_IOS)
 	[[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:matchmakerViewController animated:YES completion:nil];
 #else // osx platform
@@ -229,6 +262,18 @@
 	return 1;
 }
 
+- (NSInteger)newLuaTableFromPlayerObject:(GKPlayer *)player luaState:(lua_State *)L
+{
+	lua_newtable(L); // create lua table for player object
+	lua_pushstring(L, [[player alias] UTF8String]);
+	lua_setfield(L, -2, "playerAlias");
+	lua_pushstring(L, [[player displayName] UTF8String]);
+	lua_setfield(L, -2, "playerDisplayName");
+	lua_pushstring(L, [[player playerID] UTF8String]);
+	lua_setfield(L, -2, "playerID");
+	return 1;
+}
+
 - (NSString *)getLeaderboardIDFromLuaState:(lua_State *)L
 {
 	NSString *leaderboardID = nil;
@@ -264,43 +309,6 @@
 		dmLogError("parameters table key 'timeScope' expected");
 	}
 	return timeScope;
-}
-
-- (void)sendStartedRealTimeMatch:(GKMatch *)match luaState:(lua_State *)L
-{
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendStartedRealTimeMatch match = %@", match);
-	NSInteger playersCount = [match players].count;
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] playersCount = %zd", playersCount);
-	lua_newtable(L); // create lua table for event
-	// push items and set feilds
-	lua_pushstring(L, "matchStarted");
-	lua_setfield(L, -2, "type");
-	lua_pushinteger(L, playersCount);
-	lua_setfield(L, -2, "playersCount");
-	lua_newtable(L); // create lua table for players
-
-	int i = 1;
-	for (GKPlayer *player in [match players]) {
-		lua_pushinteger(L, i);
-		lua_newtable(L); // create lua table for player object
-		lua_pushstring(L, [[player alias] UTF8String]);
-		lua_setfield(L, -2, "playerAlias");
-		lua_pushstring(L, [[player displayName] UTF8String]);
-		lua_setfield(L, -2, "playerDisplayName");
-		lua_pushstring(L, [[player playerID] UTF8String]);
-		lua_setfield(L, -2, "playerID");
-		lua_settable(L, -3);
-        i++;
-	}
-	lua_setfield(L, -2, "players"); // add players table to event table
-
-	// store reference to lua event table
-	int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-	sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, luaTableRef);
-	
-	self.currentMatch = [match retain]; // retain the match object
-    self.currentMatch.delegate = self;
-	// is match started = YES ?
 }
 
 - (NSInteger)newLuaTableFromBitmap:(unsigned char *)bitmap width:(size_t)width height:(size_t)height luaState:(lua_State *)L

@@ -45,6 +45,14 @@ local function on_realtime_matchmaker(self, event)
 		output.text = output.text .. "on_realtime_matchmaker event.type = " .. event.type .. "\n"
 		output.text = output.text .. "on_realtime_matchmaker event.description = " .. event.description .. "\n"
 		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "matchStarted" then
+		output.text = output.text .. "on_realtime_matchmaker event.playersCount = " .. tostring(event.playersCount) .. "\n"
+		for i = 1, event.playersCount do
+			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerAlias = " .. event.players[i].playerAlias .. "\n"
+			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerDisplayName = " .. event.players[i].playerDisplayName .. "\n"
+			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerID = " .. event.players[i].playerID .. "\n"
+		end
+		msg.post("/menus#scroll_text", set_output_text_hash)
 	end
 end
 

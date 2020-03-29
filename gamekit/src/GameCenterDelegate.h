@@ -1,9 +1,6 @@
 // Apple GameKit Defold Extension
 // GameCenterDelegate.h
 
-//#import <UIKit/UIKit.h>
-//@compatibility_alias UIImage NSImage; //error need import for UIImage
-
 #if defined(DM_PLATFORM_OSX) 
 //@compatibility_alias ExistingClass OldClass; // code for iOS but make UI classes compatible with OSX NS
 @compatibility_alias UIViewController NSViewController;
@@ -17,10 +14,9 @@
 @property (nonatomic, assign) BOOL isLocalPlayerListenerRegistered;
 @property (nonatomic, assign) BOOL isRTMatchmakerCallbackRegistered;
 @property (nonatomic, assign) BOOL isMatchStarted;
-@property (nonatomic, assign) BOOL isPlayersAdded; // old addPlayers
-@property (nonatomic, assign) BOOL isAddPlayersUI; // old addPlayersUI
 @property (nonatomic, assign) UIViewController *authenticateViewController;
 @property (nonatomic, assign) GKMatch *currentMatch;
+@property (nonatomic, assign) GKInvite *currentInvite;
 
 // delegate methods
 - (void)presentGameCenterViewController:(GKGameCenterViewController *)gameCenterViewController;
@@ -31,9 +27,9 @@
 - (NSInteger)newLuaTableFromLeaderboardSetObject:(GKLeaderboardSet *)leaderboardSet luaState:(lua_State *)L;
 - (NSInteger)newLuaTableFromAchievementObject:(GKAchievement *)achievement luaState:(lua_State *)L;
 - (NSInteger)newLuaTableFromAchievementDescriptionObject:(GKAchievementDescription *)achvDescription luaState:(lua_State *)L;
+- (NSInteger)newLuaTableFromPlayerObject:(GKPlayer *)player luaState:(lua_State *)L;
 - (NSString *)getLeaderboardIDFromLuaState:(lua_State *)L;
 - (GKLeaderboardTimeScope)getLeaderboardTimeScopeFromLuaState:(lua_State *)L;
-- (void)sendStartedRealTimeMatch:(GKMatch *)match luaState:(lua_State *)L;
 - (NSInteger)newLuaTableFromBitmap:(unsigned char *)bitmap width:(size_t)width height:(size_t)height luaState:(lua_State *)L;
 - (void)sendImageFromLeaderboard:(GKLeaderboard *)leaderboard luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L;
 - (void)sendImageFromLeaderboardSet:(GKLeaderboardSet *)leaderboardSet luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L;

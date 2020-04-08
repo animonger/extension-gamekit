@@ -152,9 +152,8 @@
                     
                     if (matchmakerViewController != nil) {
                         matchmakerViewController.matchmakerDelegate = self.gameCenterDelegatePtr;
-                        [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController luaState:L];
+                        [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController];
                     } else {
-                        lua_settop(L, 0); // clear the whole stack
                         const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"failed to alloc GKMatchmakerViewController with GKMatchRequest"
                             errorCode:GKErrorAPINotAvailable] UTF8String];
 			            sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorAPINotAvailable, description);
@@ -167,6 +166,27 @@
                 lua_settop(L, 0); // clear the whole stack
                 dmLogError("You must call gc_realtime( 'registerMatchmakerCallback' ) before you call gc_realtime( 'showMatchUI' )");
             }
+///////////// command = showMatchWithInviteUI
+        } else if(strcmp(command, "showMatchWithInviteUI") == 0) {
+            if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
+                lua_settop(L, 0); // clear the whole stack
+                NSLog(@"DEBUG:NSLog [RealTimeCommands.mm] showMatchWithInviteUI");
+                // GKMatchmakerViewController *matchmakerViewController = [[GKMatchmakerViewController alloc] 
+                //     initWithInvite:self.gameCenterDelegatePtr.currentInvite];
+
+                // if (matchmakerViewController != nil) {
+                //     matchmakerViewController.matchmakerDelegate = self.gameCenterDelegatePtr;
+                //     [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController];
+                // } else {
+                //     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"failed to alloc GKMatchmakerViewController with GKInvite"
+                //         errorCode:GKErrorAPINotAvailable] UTF8String];
+                //     sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorAPINotAvailable, description);
+                // }
+            } else {
+                lua_settop(L, 0); // clear the whole stack
+                dmLogError("You must call gc_realtime( 'registerMatchmakerCallback' ) before you call gc_realtime( 'showMatchWithInviteUI' )");
+            }
+
 ///////////// command = temp
         } else if(strcmp(command, "temp") == 0) {
             // next realtime command

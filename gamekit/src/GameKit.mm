@@ -164,6 +164,8 @@ void gameCenterSignIn(lua_State *L)
 	if(gameCenterDelegatePtr == nil) {
 		if(registerGameCenterCallbackLuaRef(L, GC_SIGN_IN_CALLBACK, GC_SIGN_IN_LUA_INSTANCE)) {
 			gameCenterDelegatePtr = [[GameCenterDelegate alloc] init];
+			// Objective-C pointer to Lua State
+			gameCenterDelegatePtr.luaStatePtr = L;
 			// set GameCenterDelegate BOOLs to NO
 			gameCenterDelegatePtr.isGameCenterEnabled = NO;
 			gameCenterDelegatePtr.isLocalPlayerListenerRegistered = NO;

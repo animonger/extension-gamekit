@@ -45,6 +45,9 @@ local function on_realtime_matchmaker(self, event)
 		output.text = output.text .. "on_realtime_matchmaker event.type = " .. event.type .. "\n"
 		output.text = output.text .. "on_realtime_matchmaker event.description = " .. event.description .. "\n"
 		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "acceptedInvite" then
+		output.text = output.text .. "on_realtime_matchmaker event.type = " .. event.type .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
 	elseif event.type == "matchStarted" then
 		output.text = output.text .. "on_realtime_matchmaker event.playersCount = " .. tostring(event.playersCount) .. "\n"
 		for i = 1, event.playersCount do
@@ -328,6 +331,9 @@ function on_message(self, message_id, message, sender)
 			-- playerGroup and playerAttributes are optional paramenter table keys.
 			--gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2, playerGroup=42, playerAttributes=0xFFFF0000})
 			gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2})
+		elseif message_id == hash("show_gc_rt_match_invite_ui") then
+			-- parameters table expected even though there are no parameters to send
+			gamekit.gc_realtime("showMatchWithInviteUI", {})
 		elseif message_id == hash("send_gc_game_data") then
 			print(">game_center< send_gc_game_data message.data = " .. message.data)
 			local dataB64 = base64.encode(message.data)

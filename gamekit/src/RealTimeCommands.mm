@@ -45,14 +45,6 @@
                 if(lua_type(L, -1) != LUA_TNIL) {
                     if(registerGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE)) {
                         lua_settop(L, 0); // clear the whole stack
-                        
-                        // register listener for localPlayer only once for Invite Real-Time matchmaking Events,
-                        // Challenge Events and Turn-Based Events
-                        if (self.gameCenterDelegatePtr.isLocalPlayerListenerRegistered == NO) {
-                            [[GKLocalPlayer localPlayer] registerListener:self.gameCenterDelegatePtr];
-                            self.gameCenterDelegatePtr.isLocalPlayerListenerRegistered = YES;
-                        }
-
                         lua_newtable(L); // create lua table for event
                         // push items and set feilds
                         lua_pushstring(L, "success");
@@ -62,6 +54,12 @@
                         // store reference to lua event table
                         int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
                         sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, luaTableRef);
+                        // register listener for localPlayer only once for Invite Real-Time matchmaking Events,
+                        // Challenge Events and Turn-Based Events
+                        if (self.gameCenterDelegatePtr.isLocalPlayerListenerRegistered == NO) {
+                            [[GKLocalPlayer localPlayer] registerListener:self.gameCenterDelegatePtr];
+                            self.gameCenterDelegatePtr.isLocalPlayerListenerRegistered = YES;
+                        }
                         self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = YES;
                     } else {
                         dmLogError("failed to register realtime matchmaker callback");
@@ -170,18 +168,25 @@
         } else if(strcmp(command, "showMatchWithInviteUI") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
                 lua_settop(L, 0); // clear the whole stack
-                NSLog(@"DEBUG:NSLog [RealTimeCommands.mm] showMatchWithInviteUI");
-                // GKMatchmakerViewController *matchmakerViewController = [[GKMatchmakerViewController alloc] 
-                //     initWithInvite:self.gameCenterDelegatePtr.currentInvite];
-
-                // if (matchmakerViewController != nil) {
-                //     matchmakerViewController.matchmakerDelegate = self.gameCenterDelegatePtr;
-                //     [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController];
-                // } else {
-                //     const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"failed to alloc GKMatchmakerViewController with GKInvite"
-                //         errorCode:GKErrorAPINotAvailable] UTF8String];
-                //     sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorAPINotAvailable, description);
-                // }
+                NSLog(@"DEBUG:NSLog [RealTimeCommands.mm] showMatchWithInviteUI called");
+                if(self.gameCenterDelegatePtr.currentInvite != nil) {
+                    GKMatchmakerViewController *matchmakerViewController = [[GKMatchmakerViewController alloc] 
+                    initWithInvite:self.gameCenterDelegatePtr.currentInvite];
+                    if (matchmakerViewController != nil) {
+                        matchmakerViewController.matchmakerDelegate = self.gameCenterDelegatePtr;
+                        [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController];
+                    } else {
+                        const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"Failed to alloc GKMatchmakerViewController with GKInvite"
+                            errorCode:GKErrorAPINotAvailable] UTF8String];
+                        sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorAPINotAvailable, description);
+                    }
+                    [self.gameCenterDelegatePtr.currentInvite release];
+                    self.gameCenterDelegatePtr.currentInvite = nil;
+                } else {
+                    const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"Game center real time match invite is nil"
+                        errorCode:GKErrorInvitationsDisabled] UTF8String];
+                    sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorInvitationsDisabled, description);
+                }
             } else {
                 lua_settop(L, 0); // clear the whole stack
                 dmLogError("You must call gc_realtime( 'registerMatchmakerCallback' ) before you call gc_realtime( 'showMatchWithInviteUI' )");

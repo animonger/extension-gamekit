@@ -48,6 +48,8 @@ local function on_realtime_matchmaker(self, event)
 	elseif event.type == "acceptedInvite" then
 		output.text = output.text .. "on_realtime_matchmaker event.type = " .. event.type .. "\n"
 		msg.post("/menus#scroll_text", set_output_text_hash)
+		-- show game center real time match ui for invite
+		gamekit.gc_realtime("showMatchWithInviteUI", {})
 	elseif event.type == "matchStarted" then
 		output.text = output.text .. "on_realtime_matchmaker event.playersCount = " .. tostring(event.playersCount) .. "\n"
 		for i = 1, event.playersCount do
@@ -231,6 +233,8 @@ local function on_gc_signin(self, event)
 		output.text = output.text .. "on_gc_signin event.localPlayerIsUnderage = " .. tostring(event.localPlayerIsUnderage) .. "\n"
 		output.text = output.text .. "on_gc_signin isGameCenterEnabled = " .. tostring(isGameCenterEnabled) .. "\n"
 		msg.post("/menus#scroll_text", set_output_text_hash)
+		-- register matchmaker callback to get 'acceptedInvite' event
+		gamekit.gc_realtime("registerMatchmakerCallback", {callback=on_realtime_matchmaker})
 	end
 end
 

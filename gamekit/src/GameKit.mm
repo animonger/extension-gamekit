@@ -170,6 +170,7 @@ void gameCenterSignIn(lua_State *L)
 			gameCenterDelegatePtr.isGameCenterEnabled = NO;
 			gameCenterDelegatePtr.isLocalPlayerListenerRegistered = NO;
 			gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = NO;
+			gameCenterDelegatePtr.isRTMatchCallbackRegistered = NO;
 			gameCenterDelegatePtr.isMatchStarted = NO;
 			
 			// initialize the commands classes with the gameCenterDelegatePtr
@@ -195,6 +196,10 @@ void finalizeGameKit(lua_State *L)
 	if(gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
 		unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE);
 		gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = NO;
+	}
+	if(gameCenterDelegatePtr.isRTMatchCallbackRegistered == YES) {
+		//call realtime disconnect
+		//gameCenterDelegatePtr.isRTMatchCallbackRegistered = NO;
 	}
 	[[GKLocalPlayer localPlayer] unregisterAllListeners];
 

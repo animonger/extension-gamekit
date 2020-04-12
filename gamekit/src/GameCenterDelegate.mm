@@ -144,6 +144,30 @@
 #endif
 }
 
+- (void)match:(GKMatch *)match didReceiveData:(NSData *)data fromRemotePlayer:(GKPlayer *)player
+{
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] didReceiveData  fromRemotePlayer called");
+	
+    //const char *dataUTF8String = (const char*) [data bytes];
+    // needs further testing, if above corrupts the data use code below instead
+    // NSString *dataString = [[NSString alloc] initWithData:matchData encoding:NSUTF8StringEncoding];
+    // need to release NSString after lua_pushstring()
+    
+    // send data to Lua and act on its contents, player move, message, etc.
+    // CoronaLuaNewEvent( self.L, self.kEventName );
+    
+    // lua_pushstring( self.L, "matchData" );
+    // lua_setfield( self.L, -2, "type" );
+    
+    // lua_pushstring( self.L, [playerID UTF8String] );
+    // lua_setfield( self.L, -2, "fromPlayerID" );
+    
+    // lua_pushstring( self.L, dataUTF8String );
+    // lua_setfield( self.L, -2, "data" );
+    
+    // CoronaLuaDispatchEvent( self.L, self.realTimeListenerRef, 0 );
+}
+
 - (NSString *)stringAppendErrorDescription:(NSString *)errorDescription errorCode:(NSInteger)errorCode
 {
 	NSString *description = nil;        

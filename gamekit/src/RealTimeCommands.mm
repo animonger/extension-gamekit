@@ -40,7 +40,6 @@
 ///////////// command = registerMatchmakerCallback
         } else if(strcmp(command, "registerMatchmakerCallback") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == NO) {
-                // add error check to registerGameCenterCallback
                 lua_getfield(L, -1, "callback");
                 if(lua_type(L, -1) != LUA_TNIL) {
                     if(registerGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE)) {
@@ -191,7 +190,40 @@
                 lua_settop(L, 0); // clear the whole stack
                 dmLogError("You must call gc_realtime( 'registerMatchmakerCallback' ) before you call gc_realtime( 'showMatchWithInviteUI' )");
             }
-
+///////////// command = registerMatchCallback
+        } else if(strcmp(command, "registerMatchCallback") == 0) {
+            if(self.gameCenterDelegatePtr.isRTMatchCallbackRegistered == NO) {
+                if(self.gameCenterDelegatePtr.isMatchStarted == YES) {
+                    lua_getfield(L, -1, "callback");
+                    if(lua_type(L, -1) != LUA_TNIL) {
+                        if(registerGameCenterCallbackLuaRef(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE)) {
+                            lua_settop(L, 0); // clear the whole stack
+                            lua_newtable(L); // create lua table for event
+                            // push items and set feilds
+                            lua_pushstring(L, "success");
+                            lua_setfield(L, -2, "type");
+                            lua_pushstring(L, "realtime match callback is registered");
+                            lua_setfield(L, -2, "description");
+                            // store reference to lua event table
+                            int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
+                            sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
+                            self.gameCenterDelegatePtr.isRTMatchCallbackRegistered = YES;
+                        } else {
+                            dmLogError("failed to register realtime callback");
+                        }
+                    } else {
+                        dmLogError("parameters table key 'callback' expected");
+                    }
+                } else {
+                    lua_settop(L, 0); // clear the whole stack
+                    dmLogError("You must receive a 'matchStarted' event before you call gc_realtime( 'registerMatchCallback' )");
+                }
+            } else {
+                lua_settop(L, 0); // clear the whole stack
+                const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"realtime match callback is already registered"
+                    errorCode:GKErrorAPINotAvailable] UTF8String];
+			    sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, GKErrorAPINotAvailable, description);
+            }
 ///////////// command = temp
         } else if(strcmp(command, "temp") == 0) {
             // next realtime command

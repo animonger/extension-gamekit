@@ -7,7 +7,8 @@
 // #include "LuaStackDump.h"
 
 // 0 = GC_SIGN_IN_CALLBACK, 1 = GC_SIGN_IN_LUA_INSTANCE, 2 = GC_RT_MATCHMAKER_CALLBACK, 3 = GC_RT_MATCHMAKER_LUA_INSTANCE
-static int luaRefs[] = {LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF};
+// 4 = GC_RT_MATCH_CALLBACK, 5 = GC_RT_MATCH_LUA_INSTANCE
+static int luaRefs[] = {LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF, LUA_NOREF};
 
 bool registerGameCenterCallbackLuaRef(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey)
 {

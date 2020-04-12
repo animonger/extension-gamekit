@@ -33,6 +33,11 @@ local function on_save_game(self, event)
 	end
 end
 
+local function on_realtime_match(self, event)
+	print(">game_center< on_realtime_match event.type = " .. event.type)
+	td.dumpTable(event)
+end
+
 local function on_realtime_matchmaker(self, event)
 	print(">game_center< on_realtime_matchmaker event.type = " .. event.type)
 	td.dumpTable(event)
@@ -56,6 +61,7 @@ local function on_realtime_matchmaker(self, event)
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerAlias = " .. event.players[i].playerAlias .. "\n"
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerDisplayName = " .. event.players[i].playerDisplayName .. "\n"
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerID = " .. event.players[i].playerID .. "\n"
+			-- register real time game callback
 		end
 		msg.post("/menus#scroll_text", set_output_text_hash)
 	end
@@ -338,6 +344,10 @@ function on_message(self, message_id, message, sender)
 		elseif message_id == hash("show_gc_rt_match_invite_ui") then
 			-- parameters table expected even though there are no parameters to send
 			gamekit.gc_realtime("showMatchWithInviteUI", {})
+		elseif message_id == hash("register_rt_match_cb") then
+			gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match})
+		elseif message_id == hash("disconnect_rt_match") then
+			-- disconect match
 		elseif message_id == hash("send_gc_game_data") then
 			print(">game_center< send_gc_game_data message.data = " .. message.data)
 			local dataB64 = base64.encode(message.data)

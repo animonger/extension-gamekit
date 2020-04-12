@@ -14,6 +14,7 @@
 @property (nonatomic, assign) BOOL isGameCenterEnabled; // game center features are enabled after a localPlayer has been authenticated.
 @property (nonatomic, assign) BOOL isLocalPlayerListenerRegistered;
 @property (nonatomic, assign) BOOL isRTMatchmakerCallbackRegistered;
+@property (nonatomic, assign) BOOL isRTMatchCallbackRegistered;
 @property (nonatomic, assign) BOOL isMatchStarted;
 @property (nonatomic, assign) UIViewController *authenticateViewController;
 @property (nonatomic, assign) GKMatch *currentMatch;

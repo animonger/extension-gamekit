@@ -347,7 +347,8 @@ function on_message(self, message_id, message, sender)
 		elseif message_id == hash("register_rt_match_cb") then
 			gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match})
 		elseif message_id == hash("disconnect_rt_match") then
-			-- disconect match
+			-- parameters table expected even though there are no parameters to send
+			gamekit.gc_realtime("disconnectMatch", {})
 		elseif message_id == hash("send_gc_game_data") then
 			print(">game_center< send_gc_game_data message.data = " .. message.data)
 			local dataB64 = base64.encode(message.data)

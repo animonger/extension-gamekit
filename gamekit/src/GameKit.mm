@@ -197,10 +197,18 @@ void finalizeGameKit(lua_State *L)
 		unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE);
 		gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = NO;
 	}
-	if(gameCenterDelegatePtr.isRTMatchCallbackRegistered == YES) {
-		//call realtime disconnect
-		//gameCenterDelegatePtr.isRTMatchCallbackRegistered = NO;
+	if((gameCenterDelegatePtr.isMatchStarted == YES) && (gameCenterDelegatePtr.currentMatch != nil)) {
+		[gameCenterDelegatePtr.currentMatch disconnect];
+		gameCenterDelegatePtr.currentMatch.delegate = nil;
+		[gameCenterDelegatePtr.currentMatch release];
+		gameCenterDelegatePtr.currentMatch = nil;
+		gameCenterDelegatePtr.isMatchStarted = NO;
+		if(gameCenterDelegatePtr.isRTMatchCallbackRegistered == YES) {
+			unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE);
+			gameCenterDelegatePtr.isRTMatchCallbackRegistered = NO;
+		}
 	}
+	
 	[[GKLocalPlayer localPlayer] unregisterAllListeners];
 
 	// release the Commands

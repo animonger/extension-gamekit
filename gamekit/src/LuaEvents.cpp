@@ -109,6 +109,41 @@ void sendGameCenterRegisteredCallbackLuaErrorEvent(lua_State *L, LuaRefKey cbKey
 	// printLuaStack(L);
 }
 
+void sendGameCenterRegisteredCallbackLuaSuccessEvent(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey, const char *description)
+{
+	// dmLogUserDebug(">LuaEvents.cpp< sendGameCenterCallbackLuaSuccessEvent called");
+	if(luaRefs[cbKey] != LUA_NOREF) {
+		// printLuaStack(L);
+		// retrieve lua function
+		lua_rawgeti(L, LUA_REGISTRYINDEX, luaRefs[cbKey]);
+		// printLuaStack(L);
+		// retrieve lua self (the script instance)
+		lua_rawgeti(L, LUA_REGISTRYINDEX, luaRefs[selfKey]);
+		lua_pushvalue(L, -1);
+		dmScript::SetInstance(L);
+		// dmLogUserDebug(">LuaEvents.cpp< pushed luaSelfRef to lua stack");
+		// printLuaStack(L);
+		// create lua table for event
+		lua_newtable(L);
+		// dmLogUserDebug(">LuaEvents.cpp< new lua event table pushed to lua stack for success event");
+		// printLuaStack(L);
+		// push items and set feilds
+		lua_pushstring(L, "success");
+		lua_setfield(L, -2, "type");
+		lua_pushstring(L, description);
+		lua_setfield(L, -2, "description");
+		// dmLogUserDebug(">LuaEvents.cpp< pushed items and field types to lua event table");
+		// printLuaStack(L);
+		// call lua function with lua_pcall
+		lua_pcall(L, 2, 0, 0);
+		// dmLogUserDebug(">LuaEvents.cpp< lua_pcall(L, 2, 0, 0)");
+	}
+	else {
+		dmLogError("You must register the lua callback function before you can send a lua callback success event");
+	}
+	// printLuaStack(L);
+}
+
 int getTemporaryGameCenterCallbackLuaRef(lua_State *L)
 {
 	lua_getfield(L, -1, "callback");
@@ -206,7 +241,7 @@ void sendGameCenterCallbackLuaSuccessEvent(lua_State *L, int luaCallbackRef, int
 	// printLuaStack(L);
 	// create lua table for event
 	lua_newtable(L);
-	// dmLogUserDebug(">LuaEvents.cpp< new lua event table pushed to lua stack for error event");
+	// dmLogUserDebug(">LuaEvents.cpp< new lua event table pushed to lua stack for success event");
 	// printLuaStack(L);
 	// push items and set feilds
 	lua_pushstring(L, "success");

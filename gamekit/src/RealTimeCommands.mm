@@ -44,15 +44,8 @@
                 if(lua_type(L, -1) != LUA_TNIL) {
                     if(registerGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE)) {
                         lua_settop(L, 0); // clear the whole stack
-                        lua_newtable(L); // create lua table for event
-                        // push items and set feilds
-                        lua_pushstring(L, "success");
-                        lua_setfield(L, -2, "type");
-                        lua_pushstring(L, "realtime matchmaker callback is registered");
-                        lua_setfield(L, -2, "description");
-                        // store reference to lua event table
-                        int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                        sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, luaTableRef);
+                        const char *description = "realtime matchmaker callback is registered";
+                        sendGameCenterRegisteredCallbackLuaSuccessEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, description);
                         // register listener for localPlayer only once for Invite Real-Time matchmaking Events,
                         // Challenge Events and Turn-Based Events
                         if (self.gameCenterDelegatePtr.isLocalPlayerListenerRegistered == NO) {
@@ -75,6 +68,8 @@
 ///////////// command = unregisterMatchmakerCallback
         } else if(strcmp(command, "unregisterMatchmakerCallback") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
+                const char *description = "realtime matchmaker callback is unregistered";
+                sendGameCenterRegisteredCallbackLuaSuccessEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, description);
                 unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE);
                 self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = NO;
             }
@@ -198,15 +193,8 @@
                     if(lua_type(L, -1) != LUA_TNIL) {
                         if(registerGameCenterCallbackLuaRef(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE)) {
                             lua_settop(L, 0); // clear the whole stack
-                            lua_newtable(L); // create lua table for event
-                            // push items and set feilds
-                            lua_pushstring(L, "success");
-                            lua_setfield(L, -2, "type");
-                            lua_pushstring(L, "realtime match callback is registered");
-                            lua_setfield(L, -2, "description");
-                            // store reference to lua event table
-                            int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-                            sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
+                            const char *description = "realtime match callback is registered";
+                            sendGameCenterRegisteredCallbackLuaSuccessEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, description);
                             self.gameCenterDelegatePtr.isRTMatchCallbackRegistered = YES;
                         } else {
                             dmLogError("failed to register realtime callback");
@@ -224,6 +212,24 @@
                     errorCode:GKErrorAPINotAvailable] UTF8String];
 			    sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, GKErrorAPINotAvailable, description);
             }
+///////////// command = disconnectMatch
+        } else if(strcmp(command, "disconnectMatch") == 0) {
+            if((self.gameCenterDelegatePtr.isMatchStarted == YES) && (self.gameCenterDelegatePtr.currentMatch != nil)) {
+                [self.gameCenterDelegatePtr.currentMatch disconnect];
+                self.gameCenterDelegatePtr.currentMatch.delegate = nil;
+                [self.gameCenterDelegatePtr.currentMatch release];
+                self.gameCenterDelegatePtr.currentMatch = nil;
+                self.gameCenterDelegatePtr.isMatchStarted = NO;
+
+                if(self.gameCenterDelegatePtr.isRTMatchCallbackRegistered == YES) {
+                    lua_settop(L, 0); // clear the whole stack
+                    const char *description = "realtime match is disconnected and callback unregistered";
+                    sendGameCenterRegisteredCallbackLuaSuccessEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, description);
+                    unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE);
+                    self.gameCenterDelegatePtr.isRTMatchCallbackRegistered = NO;
+                }
+            }
+            lua_settop(L, 0); // clear the whole stack
 ///////////// command = temp
         } else if(strcmp(command, "temp") == 0) {
             // next realtime command

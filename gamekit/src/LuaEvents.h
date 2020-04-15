@@ -55,6 +55,7 @@ bool registerGameCenterCallbackLuaRef(lua_State *L, LuaRefKey cbKey, LuaRefKey s
 void unRegisterGameCenterCallbackLuaRef(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey);
 void sendGameCenterRegisteredCallbackLuaEvent(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey, int luaTableRef);
 void sendGameCenterRegisteredCallbackLuaErrorEvent(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey, int errorCode, const char *description);
+void sendGameCenterRegisteredCallbackLuaSuccessEvent(lua_State *L, LuaRefKey cbKey, LuaRefKey selfKey, const char *description);
 int getTemporaryGameCenterCallbackLuaRef(lua_State *L);
 int getTemporaryGameCenterSelfLuaRef(lua_State *L);
 void sendGameCenterCallbackLuaEvent(lua_State *L, int luaCallbackRef, int luaSelfRef, int luaTableRef);

@@ -36,6 +36,24 @@ end
 local function on_realtime_match(self, event)
 	print(">game_center< on_realtime_match event.type = " .. event.type)
 	td.dumpTable(event)
+	if event.type == "error" then
+		output.text = output.text .. "on_realtime_match event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_realtime_match event.errorCode = " .. tostring(event.errorCode) .. "\n"
+		output.text = output.text .. "on_realtime_match event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "success" then
+		output.text = output.text .. "on_realtime_match event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_realtime_match event.description = " .. event.description .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "matchData" then
+		output.text = output.text .. "on_realtime_match event.type = " .. event.type .. "\n"
+		local dataString = base64.decode(event.data) -- decode base64 data from game center
+		output.text = output.text .. "on_realtime_match event.data = " .. dataString .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerAlias = " .. event.playerAlias .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerDisplayName = " .. event.playerDisplayName .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerID = " .. event.playerID .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	end
 end
 
 local function on_realtime_matchmaker(self, event)
@@ -62,6 +80,7 @@ local function on_realtime_matchmaker(self, event)
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerDisplayName = " .. event.players[i].playerDisplayName .. "\n"
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerID = " .. event.players[i].playerID .. "\n"
 			-- register real time game callback
+			gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match})
 		end
 		msg.post("/menus#scroll_text", set_output_text_hash)
 	end
@@ -332,6 +351,9 @@ function on_message(self, message_id, message, sender)
 			gamekit.gc_get("achievementImage", {achievementID=self.achievement_40pointsId, callback=on_achievements})
 		elseif message_id == hash("send_gc_reset_achvs") then
 			gamekit.gc_send("resetAchievements", {callback=on_achievements})
+		elseif message_id == hash("send_rt_data_all_players") then
+			local dataB64 = base64.encode(message.data) -- base64 encode data to send to game center
+			gamekit.gc_realtime("sendDataToAllPlayers", {data=dataB64, dataMode="Reliable", isConfirmed=true})
 		elseif message_id == hash("register_rt_matchmaker_cb") then
 			gamekit.gc_realtime("registerMatchmakerCallback", {callback=on_realtime_matchmaker})
 		elseif message_id == hash("unregister_rt_matchmaker_cb") then

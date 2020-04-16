@@ -34,9 +34,69 @@
         luaL_checktype(L, 1, LUA_TSTRING);
         const char *command = lua_tostring( L, 1 );
         NSLog(@"DEBUG:NSLog [RealTimeCommands.mm] gcRealTimeCommandFromLuaState called command = %s", command);
-///////////// command = rttemp
-        if(strcmp(command, "rttemp") == 0) {
-            // realtime listner command here
+///////////// command = sendDataToAllPlayers
+        if(strcmp(command, "sendDataToAllPlayers") == 0) {
+            if(self.gameCenterDelegatePtr.isRTMatchCallbackRegistered == YES) {
+                if((self.gameCenterDelegatePtr.isMatchStarted == YES) && (self.gameCenterDelegatePtr.currentMatch != nil)) {
+                    NSData *data = nil;
+                    lua_getfield( L, -1, "data" );
+                    if(lua_type(L, -1) != LUA_TNIL) {
+                        luaL_checktype(L, -1, LUA_TSTRING);
+                        const char *dataUTF8String = lua_tostring(L, -1);
+                        data = [NSData dataWithBytes:dataUTF8String length:strlen(dataUTF8String)]; // needs further testing
+                        // if above corrupts the data use code below instead
+                        // NSString *dataUTF8String = [NSString stringWithUTF8String:lua_tostring( L, -1 )];
+                        // data = [dataUTF8String dataUsingEncoding:NSUTF8StringEncoding];
+                        lua_pop(L, 1);
+                    } else {
+                        dmLogError("parameters table key 'data' expected");
+                    }
+
+                    GKMatchSendDataMode dataMode = GKMatchSendDataReliable;
+                    lua_getfield( L, -1, "dataMode" );
+                    if(lua_type(L, -1) != LUA_TNIL) {
+                        luaL_checktype(L, -1, LUA_TSTRING);
+                        const char *mode = lua_tostring(L, -1);
+                        if ( strcmp( mode, "Reliable" ) == 0 ) {
+                            dataMode = GKMatchSendDataReliable;
+                        } else if ( strcmp( mode, "Unreliable" ) == 0 ) {
+                            dataMode = GKMatchSendDataUnreliable;
+                        } else {
+                            dmLogError("'Reliable' or 'Unreliable' string expected but got %s", mode);
+                        }
+                        lua_pop(L, 1);
+                    } else {
+                        dmLogError("parameters table key 'dataMode' expected");
+                    }
+                    
+                    BOOL isConfirmed = NO;
+                    lua_getfield( L, -1, "isConfirmed" );
+                    if(lua_type(L, -1) != LUA_TNIL) {
+                        luaL_checktype(L, -1, LUA_TBOOLEAN);
+                        isConfirmed = (BOOL) lua_toboolean(L, -1);
+                    } else {
+                        dmLogError("parameters table key 'isConfirmed' expected");
+                    }
+                    lua_settop(L, 0); // clear the whole stack
+
+                    NSError *error = nil; 
+                    BOOL isSuccess = [self.gameCenterDelegatePtr.currentMatch sendDataToAllPlayers:data withDataMode:dataMode error:&error];
+                    if((isSuccess == YES) && (isConfirmed == YES)) {
+                        const char *description = "data was successfully queued to all players";
+                        sendGameCenterRegisteredCallbackLuaSuccessEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, description);
+                    } else if(error != nil) {
+                        const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:[error localizedDescription] 
+                            errorCode:[error code]] UTF8String];
+                        sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, [error code], description);
+                    }
+                } else {
+                    lua_settop(L, 0); // clear the whole stack
+                    dmLogError("You must receive a 'matchStarted' event before you call gc_realtime( 'sendDataToAllPlayers' )");
+                }
+            } else {
+                lua_settop(L, 0); // clear the whole stack
+                dmLogError("You must call gc_realtime( 'registerMatchCallback' ) before you call gc_realtime( 'sendDataToAllPlayers' )");
+            }
 ///////////// command = registerMatchmakerCallback
         } else if(strcmp(command, "registerMatchmakerCallback") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == NO) {

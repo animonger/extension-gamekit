@@ -114,7 +114,6 @@
 	}
 }
 
-// real-time invite events
 // called on localPlayer device after localPlayer accepts friend invite
 - (void)player:(GKPlayer *)player didAcceptInvite:(GKInvite *)invite
 {
@@ -180,6 +179,36 @@
 	// store reference to lua event table
 	int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
 	sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
+}
+
+- (void)match:(GKMatch *)match player:(GKPlayer *)player didChangeConnectionState:(GKPlayerConnectionState)state
+{
+
+}
+
+// called when realtime match cannot connect to any other players. it usually means a serious networking error has occurred
+- (void)match:(GKMatch *)match didFailWithError:(NSError *)error
+{
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] match didFailWithError called");
+	if(self.isRTMatchCallbackRegistered == YES) {
+		lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
+		lua_settop(L, 0); // clear the whole stack
+		const char *description = [[self stringAppendErrorDescription:[error localizedDescription] errorCode:[error code]] UTF8String];
+		sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, [error code], description);
+		if(self.currentMatch != nil) {
+			[self.currentMatch disconnect];
+			self.currentMatch.delegate = nil;
+			[self.currentMatch release];
+			self.currentMatch = nil;
+		}
+		if(self.isMatchStarted == YES) {
+			self.isMatchStarted = NO;
+		}
+		description = "realtime match is disconnected and callback unregistered";
+		sendGameCenterRegisteredCallbackLuaSuccessEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, description);
+		unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE);
+		self.isRTMatchCallbackRegistered = NO;
+	}
 }
 
 - (NSString *)stringAppendErrorDescription:(NSString *)errorDescription errorCode:(NSInteger)errorCode

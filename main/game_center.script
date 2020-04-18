@@ -4,6 +4,8 @@ local base64 = require "main.base64"
 local isGameCenterEnabled
 local isGameCenterSignInUiEnabled
 local set_output_text_hash
+local localPlayerID
+local opponentPlayerID
 
 local function display_image(img_width, img_height, img_buffer)
 	local resource_path = go.get("#display", "texture0")
@@ -53,6 +55,14 @@ local function on_realtime_match(self, event)
 		output.text = output.text .. "on_realtime_match from event.playerDisplayName = " .. event.playerDisplayName .. "\n"
 		output.text = output.text .. "on_realtime_match from event.playerID = " .. event.playerID .. "\n"
 		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "playerData" then
+		output.text = output.text .. "on_realtime_match event.type = " .. event.type .. "\n"
+		local dataString = base64.decode(event.data) -- decode base64 data from game center
+		output.text = output.text .. "on_realtime_match event.data = " .. dataString .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerAlias = " .. event.playerAlias .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerDisplayName = " .. event.playerDisplayName .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerID = " .. event.playerID .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
 	end
 end
 
@@ -76,13 +86,15 @@ local function on_realtime_matchmaker(self, event)
 	elseif event.type == "matchStarted" then
 		output.text = output.text .. "on_realtime_matchmaker event.playersCount = " .. tostring(event.playersCount) .. "\n"
 		for i = 1, event.playersCount do
+			if event.players[i].playerID ~= localPlayerID then -- this conditional only works for a 2 player game
+				opponentPlayerID = event.players[i].playerID
+			end
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerAlias = " .. event.players[i].playerAlias .. "\n"
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerDisplayName = " .. event.players[i].playerDisplayName .. "\n"
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerID = " .. event.players[i].playerID .. "\n"
-			-- register real time game callback
-			gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match})
 		end
 		msg.post("/menus#scroll_text", set_output_text_hash)
+		gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match}) -- register callback to send and recive matchData
 	end
 end
 
@@ -252,6 +264,7 @@ local function on_gc_signin(self, event)
 	elseif event.type == "authenticated" then
 		isGameCenterEnabled = true
 		isGameCenterSignInUiEnabled = false
+		localPlayerID = event.localPlayerID
 		output.text = output.text .. "on_gc_signin event.type = " .. event.type .. "\n"
 		output.text = output.text .. "on_gc_signin event.localPlayerID = " .. event.localPlayerID .. "\n"
 		output.text = output.text .. "on_gc_signin event.localPlayerAlias = " .. event.localPlayerAlias .. "\n"
@@ -266,6 +279,8 @@ end
 function init(self)
 	isGameCenterEnabled = false
 	isGameCenterSignInUiEnabled = false
+	localPlayerID = ""
+	opponentPlayerID = ""
 	-- change the following IDs to your IDs you setup for Game Center on App Store Connect
 	self.default_leaderboardID = "com.animonger.defoldtestgamekit.default.leaderboard"
 	self.second_leaderboardID = "com.animonger.defoldtestgamekit.second.leaderboard"
@@ -354,6 +369,9 @@ function on_message(self, message_id, message, sender)
 		elseif message_id == hash("send_rt_data_all_players") then
 			local dataB64 = base64.encode(message.data) -- base64 encode data to send to game center
 			gamekit.gc_realtime("sendDataToAllPlayers", {data=dataB64, dataMode="Reliable", isConfirmed=true})
+		elseif message_id == hash("send_rt_data_to_players") then
+			local dataB64 = base64.encode(message.data) -- base64 encode data to send to game center
+			gamekit.gc_realtime("sendDataToPlayers", {data=dataB64, dataMode="Reliable", playerIDs={opponentPlayerID}, isConfirmed=true})
 		elseif message_id == hash("register_rt_matchmaker_cb") then
 			gamekit.gc_realtime("registerMatchmakerCallback", {callback=on_realtime_matchmaker})
 		elseif message_id == hash("unregister_rt_matchmaker_cb") then

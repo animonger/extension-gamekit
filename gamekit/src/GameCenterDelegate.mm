@@ -163,6 +163,25 @@
 	sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
 }
 
+- (void)match:(GKMatch *)match didReceiveData:(NSData *)data forRecipient:(GKPlayer *)recipient fromRemotePlayer:(GKPlayer *)player
+{
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] didReceiveData forRecipient fromRemotePlayer called");
+	lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
+	[self newLuaTableFromPlayerObject:player luaState:L];
+	
+	const char *dataUTF8String = (const char*) [data bytes];
+    // needs further testing, if above corrupts the data use code below instead
+    // NSString *dataString = [[NSString alloc] initWithData:matchData encoding:NSUTF8StringEncoding];
+    // need to release NSString after lua_pushstring()
+	lua_pushstring(L, dataUTF8String);
+    lua_setfield(L, -2, "data");
+	lua_pushstring(L, "playerData");
+    lua_setfield(L, -2, "type");
+	// store reference to lua event table
+	int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
+	sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
+}
+
 - (NSString *)stringAppendErrorDescription:(NSString *)errorDescription errorCode:(NSInteger)errorCode
 {
 	NSString *description = nil;        

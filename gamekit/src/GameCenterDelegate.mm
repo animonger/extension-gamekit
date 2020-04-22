@@ -58,7 +58,7 @@
 #endif
 	[matchmakerViewController release];
 
-    if (self.isMatchStarted == NO && match.expectedPlayerCount == 0) {
+    if (self.isMatchStarted == NO) {
 		self.currentMatch = [match retain]; // retain the match object
 		self.currentMatch.delegate = self;
 		self.isMatchStarted = YES;
@@ -71,6 +71,9 @@
 		// push items and set feilds
 		lua_pushstring(L, "matchStarted");
 		lua_setfield(L, -2, "type");
+		// expectedPlayerCount, The remaining number of players who have not yet connected to the match.
+		lua_pushinteger(L, match.expectedPlayerCount);
+		lua_setfield(L, -2, "expectedPlayerCount");
 		lua_pushinteger(L, playersCount);
 		lua_setfield(L, -2, "playersCount");
 		lua_newtable(L); // create lua table for players
@@ -143,6 +146,7 @@
 #endif
 }
 
+// iOS 8 and above
 - (void)match:(GKMatch *)match didReceiveData:(NSData *)data fromRemotePlayer:(GKPlayer *)player
 {
 	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] didReceiveData fromRemotePlayer called");
@@ -162,6 +166,7 @@
 	sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
 }
 
+// iOS 9 and above
 - (void)match:(GKMatch *)match didReceiveData:(NSData *)data forRecipient:(GKPlayer *)recipient fromRemotePlayer:(GKPlayer *)player
 {
 	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] didReceiveData forRecipient fromRemotePlayer called");
@@ -174,7 +179,7 @@
     // need to release NSString after lua_pushstring()
 	lua_pushstring(L, dataUTF8String);
     lua_setfield(L, -2, "data");
-	lua_pushstring(L, "playerData");
+	lua_pushstring(L, "matchData");
     lua_setfield(L, -2, "type");
 	// store reference to lua event table
 	int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
@@ -183,7 +188,60 @@
 
 - (void)match:(GKMatch *)match player:(GKPlayer *)player didChangeConnectionState:(GKPlayerConnectionState)state
 {
+	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] match player didChangeConnectionState isMatchStarted = %@", self.isMatchStarted ? @"YES" : @"NO");
+	switch(state)
+	{
+		case GKPlayerStateConnected:  // Added player is connected to the match and can receive data. 
+			NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateConnected match = %@,  player = %@", match, player);
+			if(self.isRTMatchmakerCallbackRegistered == YES) {
+				lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
+				lua_settop(L, 0); // clear the whole stack
+				[self newLuaTableFromPlayerObject:player luaState:L];
+				// push items and set feilds
+				lua_pushstring(L, "playerAddedToMatch");
+				lua_setfield(L, -2, "type");
+				// expectedPlayerCount, The remaining number of players who have not yet connected to the match.
+				lua_pushinteger(L, match.expectedPlayerCount);
+				lua_setfield(L, -2, "expectedPlayerCount");
+				lua_pushinteger(L, [match players].count);
+				lua_setfield(L, -2, "playersCount");
+				
+				// store reference to lua event table
+				int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
+				sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, luaTableRef);
+			}
+			break;
 
+		case GKPlayerStateDisconnected:  // The player is disconnected from the match and cannot receive data.
+			NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateDisconnected match = %@,  player = %@", match, player);
+			if(self.isRTMatchCallbackRegistered == YES) {
+				lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
+				lua_settop(L, 0); // clear the whole stack
+				[self newLuaTableFromPlayerObject:player luaState:L];
+				// push items and set feilds
+				lua_pushstring(L, "playerStateDisconnected");
+				lua_setfield(L, -2, "type");
+				// store reference to lua event table
+				int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
+				sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
+			}
+			break;
+
+		case GKPlayerStateUnknown:  // The player is in an indeterminate state and cannot receive data.
+			NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateUnknown match = %@,  player = %@", match, player);
+			if(self.isRTMatchCallbackRegistered == YES) {
+				lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
+				lua_settop(L, 0); // clear the whole stack
+				[self newLuaTableFromPlayerObject:player luaState:L];
+				// push items and set feilds
+				lua_pushstring(L, "playerStateUnknown");
+				lua_setfield(L, -2, "type");
+				// store reference to lua event table
+				int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
+				sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
+			}
+			break;
+	}
 }
 
 // called when realtime match cannot connect to any other players. it usually means a serious networking error has occurred

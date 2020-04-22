@@ -55,10 +55,14 @@ local function on_realtime_match(self, event)
 		output.text = output.text .. "on_realtime_match from event.playerDisplayName = " .. event.playerDisplayName .. "\n"
 		output.text = output.text .. "on_realtime_match from event.playerID = " .. event.playerID .. "\n"
 		msg.post("/menus#scroll_text", set_output_text_hash)
-	elseif event.type == "playerData" then
+	elseif event.type == "playerStateDisconnected" then
 		output.text = output.text .. "on_realtime_match event.type = " .. event.type .. "\n"
-		local dataString = base64.decode(event.data) -- decode base64 data from game center
-		output.text = output.text .. "on_realtime_match event.data = " .. dataString .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerAlias = " .. event.playerAlias .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerDisplayName = " .. event.playerDisplayName .. "\n"
+		output.text = output.text .. "on_realtime_match from event.playerID = " .. event.playerID .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
+	elseif event.type == "playerStateUnknown" then
+		output.text = output.text .. "on_realtime_match event.type = " .. event.type .. "\n"
 		output.text = output.text .. "on_realtime_match from event.playerAlias = " .. event.playerAlias .. "\n"
 		output.text = output.text .. "on_realtime_match from event.playerDisplayName = " .. event.playerDisplayName .. "\n"
 		output.text = output.text .. "on_realtime_match from event.playerID = " .. event.playerID .. "\n"
@@ -84,6 +88,8 @@ local function on_realtime_matchmaker(self, event)
 		-- show game center real time match ui for invite
 		gamekit.gc_realtime("showMatchWithInviteUI", {})
 	elseif event.type == "matchStarted" then
+		output.text = output.text .. "on_realtime_matchmaker event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.expectedPlayerCount = " .. tostring(event.expectedPlayerCount) .. "\n"
 		output.text = output.text .. "on_realtime_matchmaker event.playersCount = " .. tostring(event.playersCount) .. "\n"
 		for i = 1, event.playersCount do
 			if event.players[i].playerID ~= localPlayerID then -- this conditional only works for a 2 player game
@@ -94,7 +100,19 @@ local function on_realtime_matchmaker(self, event)
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerID = " .. event.players[i].playerID .. "\n"
 		end
 		msg.post("/menus#scroll_text", set_output_text_hash)
-		gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match}) -- register callback to send and recive matchData
+		-- expectedPlayerCount, the remaining number of players who have not yet connected to the match
+		-- When its value reaches 0, all expected players are connected, and your game can begin the match.
+		if event.expectedPlayerCount == 0 then
+			gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match}) -- register callback to send and recive matchData
+		end
+	elseif event.type == "playerAddedToMatch" then
+		output.text = output.text .. "on_realtime_matchmaker event.type = " .. event.type .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.expectedPlayerCount = " .. tostring(event.expectedPlayerCount) .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.playersCount = " .. tostring(event.playersCount) .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.playerAlias = " .. event.playerAlias .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.playerDisplayName = " .. event.playerDisplayName .. "\n"
+		output.text = output.text .. "on_realtime_matchmaker event.playerID = " .. event.playerID .. "\n"
+		msg.post("/menus#scroll_text", set_output_text_hash)
 	end
 end
 

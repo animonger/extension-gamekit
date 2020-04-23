@@ -33,6 +33,7 @@
 - (NSString *)getLeaderboardIDFromLuaState:(lua_State *)L;
 - (GKLeaderboardTimeScope)getLeaderboardTimeScopeFromLuaState:(lua_State *)L;
 - (NSInteger)newLuaTableFromBitmap:(unsigned char *)bitmap width:(size_t)width height:(size_t)height luaState:(lua_State *)L;
+- (void)sendMatchData:(NSData *)data fromPlayer:(GKPlayer *)player;
 - (void)sendImageFromLeaderboard:(GKLeaderboard *)leaderboard luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L;
 - (void)sendImageFromLeaderboardSet:(GKLeaderboardSet *)leaderboardSet luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L;
 - (void)sendImageFromAchievementDescription:(GKAchievementDescription *)achvDescription luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L;

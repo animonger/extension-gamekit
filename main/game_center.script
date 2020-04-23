@@ -386,7 +386,7 @@ function on_message(self, message_id, message, sender)
 			gamekit.gc_send("resetAchievements", {callback=on_achievements})
 		elseif message_id == hash("send_rt_data_all_players") then
 			local dataB64 = base64.encode(message.data) -- base64 encode data to send to game center
-			gamekit.gc_realtime("sendDataToAllPlayers", {data=dataB64, dataMode="Reliable", isConfirmed=true})
+			gamekit.gc_realtime("sendDataToAllPlayers", {data=dataB64, dataMode="Unreliable", isConfirmed=true})
 		elseif message_id == hash("send_rt_data_to_players") then
 			local dataB64 = base64.encode(message.data) -- base64 encode data to send to game center
 			gamekit.gc_realtime("sendDataToPlayers", {data=dataB64, dataMode="Reliable", playerIDs={opponentPlayerID}, isConfirmed=true})

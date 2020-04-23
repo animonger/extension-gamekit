@@ -221,12 +221,12 @@
 ///////////// command = unregisterMatchmakerCallback
         } else if(strcmp(command, "unregisterMatchmakerCallback") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
+                lua_settop(L, 0); // clear the whole stack
                 const char *description = "realtime matchmaker callback is unregistered";
                 sendGameCenterRegisteredCallbackLuaSuccessEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, description);
                 unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE);
                 self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered = NO;
             }
-            lua_settop(L, 0); // clear the whole stack
 ///////////// command = showMatchUI
         } else if(strcmp(command, "showMatchUI") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {

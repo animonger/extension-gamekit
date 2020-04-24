@@ -230,7 +230,7 @@
 ///////////// command = showMatchUI
         } else if(strcmp(command, "showMatchUI") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
-                if(self.gameCenterDelegatePtr.isMatchStarted == NO) {
+                if((self.gameCenterDelegatePtr.isMatchStarted == NO) && (self.gameCenterDelegatePtr.matchRequest == nil)) {
                     NSUInteger minPlayers = 0;
                     lua_getfield(L, -1, "minPlayers");
                     if(lua_type(L, -1) != LUA_TNIL) {
@@ -281,25 +281,24 @@
                     // playerAttributes is an optional parameter so no error if none exists
                     lua_settop(L, 0); // clear the whole stack
 
-                    GKMatchRequest *request = [[GKMatchRequest alloc] init];
-                    request.minPlayers = minPlayers;
-                    request.maxPlayers = maxPlayers;
-                    request.defaultNumberOfPlayers = defaultNumPlayers;
-                    if ( playerGroupEnabled == YES ) {
-                        request.playerGroup = playerGroup;
+                    self.gameCenterDelegatePtr.matchRequest = [[GKMatchRequest alloc] init];
+                    self.gameCenterDelegatePtr.matchRequest.minPlayers = minPlayers;
+                    self.gameCenterDelegatePtr.matchRequest.maxPlayers = maxPlayers;
+                    self.gameCenterDelegatePtr.matchRequest.defaultNumberOfPlayers = defaultNumPlayers;
+                    if(playerGroupEnabled == YES) {
+                        self.gameCenterDelegatePtr.matchRequest.playerGroup = playerGroup;
                     }
-                    if ( playerAttributesEnabled == YES ) {
-                        request.playerAttributes = playerAttributes;
+                    if(playerAttributesEnabled == YES) {
+                        self.gameCenterDelegatePtr.matchRequest.playerAttributes = playerAttributes;
                     }
 
-                    GKMatchmakerViewController *matchmakerViewController = [[GKMatchmakerViewController alloc] initWithMatchRequest:request];
-                    [request release];
-                    
-                    if (matchmakerViewController != nil) {
+                    GKMatchmakerViewController *matchmakerViewController = [[GKMatchmakerViewController alloc] 
+                        initWithMatchRequest:self.gameCenterDelegatePtr.matchRequest];
+                    if(matchmakerViewController != nil) {
                         matchmakerViewController.matchmakerDelegate = self.gameCenterDelegatePtr;
                         [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController];
                     } else {
-                        const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"failed to alloc GKMatchmakerViewController with GKMatchRequest"
+                        const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"Failed to alloc GKMatchmakerViewController with GKMatchRequest"
                             errorCode:GKErrorAPINotAvailable] UTF8String];
 			            sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorAPINotAvailable, description);
                     }
@@ -310,6 +309,35 @@
             } else {
                 lua_settop(L, 0); // clear the whole stack
                 dmLogError("You must call gc_realtime( 'registerMatchmakerCallback' ) before you call gc_realtime( 'showMatchUI' )");
+            }
+///////////// command = showAddPlayersToMatchUI
+        } else if(strcmp(command, "showAddPlayersToMatchUI") == 0) {
+            if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
+                if((self.gameCenterDelegatePtr.isMatchStarted == YES) && (self.gameCenterDelegatePtr.currentMatch != nil) && 
+                    (self.gameCenterDelegatePtr.matchRequest != nil)) {
+                    lua_settop(L, 0); // clear the whole stack
+
+                    GKMatchmakerViewController *matchmakerViewController = [[GKMatchmakerViewController alloc] 
+                        initWithMatchRequest:self.gameCenterDelegatePtr.matchRequest];
+                    if(matchmakerViewController != nil) {
+                        matchmakerViewController.matchmakerDelegate = self.gameCenterDelegatePtr;
+                        [matchmakerViewController addPlayersToMatch:self.gameCenterDelegatePtr.currentMatch];
+                        [self.gameCenterDelegatePtr presentGCMatchmakerViewController:matchmakerViewController];
+                        // when addPlayersToMatch is called it sets the delegate on the existing match to nil
+                        // the match delegate has to be set again to continue to receive match events
+                        self.gameCenterDelegatePtr.currentMatch.delegate = self.gameCenterDelegatePtr;
+                    } else {
+                        const char *description = [[self.gameCenterDelegatePtr stringAppendErrorDescription:@"Failed to alloc GKMatchmakerViewController with GKMatchRequest"
+                            errorCode:GKErrorAPINotAvailable] UTF8String];
+                        sendGameCenterRegisteredCallbackLuaErrorEvent(L, GC_RT_MATCHMAKER_CALLBACK, GC_RT_MATCHMAKER_LUA_INSTANCE, GKErrorAPINotAvailable, description);
+                    }
+                } else {
+                    lua_settop(L, 0); // clear the whole stack
+                    dmLogError("You must receive a 'matchStarted' event before you call gc_realtime( 'showAddPlayersToMatchUI' )");
+                }
+            } else {
+                lua_settop(L, 0); // clear the whole stack
+                dmLogError("You must call gc_realtime( 'registerMatchmakerCallback' ) before you call gc_realtime( 'showAddPlayersToMatchUI' )");
             }
 ///////////// command = showMatchWithInviteUI
         } else if(strcmp(command, "showMatchWithInviteUI") == 0) {
@@ -373,6 +401,11 @@
                 [self.gameCenterDelegatePtr.currentMatch release];
                 self.gameCenterDelegatePtr.currentMatch = nil;
                 self.gameCenterDelegatePtr.isMatchStarted = NO;
+
+                if(self.gameCenterDelegatePtr.matchRequest != nil) {
+                    [self.gameCenterDelegatePtr.matchRequest release];
+                    self.gameCenterDelegatePtr.matchRequest = nil;
+                }
 
                 if(self.gameCenterDelegatePtr.isRTMatchCallbackRegistered == YES) {
                     lua_settop(L, 0); // clear the whole stack

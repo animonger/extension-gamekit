@@ -5,7 +5,7 @@ local isGameCenterEnabled
 local isGameCenterSignInUiEnabled
 local set_output_text_hash
 local localPlayerID
-local opponentPlayerID
+local opponentPlayerIDs
 
 local function display_image(img_width, img_height, img_buffer)
 	local resource_path = go.get("#display", "texture0")
@@ -92,9 +92,7 @@ local function on_realtime_matchmaker(self, event)
 		output.text = output.text .. "on_realtime_matchmaker event.expectedPlayerCount = " .. tostring(event.expectedPlayerCount) .. "\n"
 		output.text = output.text .. "on_realtime_matchmaker event.playersCount = " .. tostring(event.playersCount) .. "\n"
 		for i = 1, event.playersCount do
-			if event.players[i].playerID ~= localPlayerID then -- this conditional only works for a 2 player game
-				opponentPlayerID = event.players[i].playerID
-			end
+			opponentPlayerIDs[i] = event.players[i].playerID
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerAlias = " .. event.players[i].playerAlias .. "\n"
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerDisplayName = " .. event.players[i].playerDisplayName .. "\n"
 			output.text = output.text .. "on_realtime_matchmaker event.players[" .. tostring(i) .. "].playerID = " .. event.players[i].playerID .. "\n"
@@ -298,7 +296,7 @@ function init(self)
 	isGameCenterEnabled = false
 	isGameCenterSignInUiEnabled = false
 	localPlayerID = ""
-	opponentPlayerID = ""
+	opponentPlayerIDs = {}
 	-- change the following IDs to your IDs you setup for Game Center on App Store Connect
 	self.default_leaderboardID = "com.animonger.defoldtestgamekit.default.leaderboard"
 	self.second_leaderboardID = "com.animonger.defoldtestgamekit.second.leaderboard"
@@ -389,7 +387,7 @@ function on_message(self, message_id, message, sender)
 			gamekit.gc_realtime("sendDataToAllPlayers", {data=dataB64, dataMode="Unreliable", isConfirmed=true})
 		elseif message_id == hash("send_rt_data_to_players") then
 			local dataB64 = base64.encode(message.data) -- base64 encode data to send to game center
-			gamekit.gc_realtime("sendDataToPlayers", {data=dataB64, dataMode="Reliable", playerIDs={opponentPlayerID}, isConfirmed=true})
+			gamekit.gc_realtime("sendDataToPlayers", {data=dataB64, dataMode="Reliable", playerIDs={opponentPlayerIDs[1]}, isConfirmed=true})
 		elseif message_id == hash("register_rt_matchmaker_cb") then
 			gamekit.gc_realtime("registerMatchmakerCallback", {callback=on_realtime_matchmaker})
 		elseif message_id == hash("unregister_rt_matchmaker_cb") then
@@ -398,7 +396,13 @@ function on_message(self, message_id, message, sender)
 		elseif message_id == hash("show_gc_rt_match_ui") then
 			-- playerGroup and playerAttributes are optional paramenter table keys.
 			--gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2, playerGroup=42, playerAttributes=0xFFFF0000})
-			gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2})
+			--minPlayers number must be at least 2 and no greater than 4.
+			--maxPlayers number is 4 and must be equal or greater than the minPlayers number.
+			--defaultNumPlayers determines the number of invitees shown in the standard matchmaking user interface.
+			gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=3, defaultNumPlayers=3})
+		elseif message_id == hash("show_gc_rt_add_players_to_match_ui") then
+			-- parameters table expected even though there are no parameters to send
+			gamekit.gc_realtime("showAddPlayersToMatchUI", {})
 		elseif message_id == hash("show_gc_rt_match_invite_ui") then
 			-- parameters table expected even though there are no parameters to send
 			gamekit.gc_realtime("showMatchWithInviteUI", {})

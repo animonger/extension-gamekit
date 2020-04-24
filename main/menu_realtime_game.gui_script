@@ -15,6 +15,7 @@ local btn_send_rt_data_to_players
 local btn_register_rt_matchmaker_cb
 local btn_unregister_rt_matchmaker_cb
 local btn_show_gc_rt_match_ui
+local btn_show_gc_rt_add_players_to_match_ui
 local btn_show_gc_rt_match_invite_ui
 local btn_register_rt_match_cb
 local btn_disconnect_rt_match
@@ -63,6 +64,7 @@ function init(self)
 	btn_register_rt_matchmaker_cb = gui.get_node("register_rt_matchmaker_cb/button")
 	btn_unregister_rt_matchmaker_cb = gui.get_node("unregister_rt_matchmaker_cb/button")
 	btn_show_gc_rt_match_ui = gui.get_node("show_gc_rt_match_ui/button")
+	btn_show_gc_rt_add_players_to_match_ui = gui.get_node("show_gc_rt_add_players_to_match_ui/button")
 	btn_show_gc_rt_match_invite_ui = gui.get_node("show_gc_rt_match_invite_ui/button")
 	btn_register_rt_match_cb = gui.get_node("register_rt_match_cb/button")
 	btn_disconnect_rt_match = gui.get_node("disconnect_rt_match/button")
@@ -113,6 +115,8 @@ function on_input(self, action_id, action)
 			gui.set_scale(btn_unregister_rt_matchmaker_cb, btn_pressed_scale)
 		elseif gui.pick_node(btn_show_gc_rt_match_ui, action.x, action.y) then
 			gui.set_scale(btn_show_gc_rt_match_ui, btn_pressed_scale)
+		elseif gui.pick_node(btn_show_gc_rt_add_players_to_match_ui, action.x, action.y) then
+			gui.set_scale(btn_show_gc_rt_add_players_to_match_ui, btn_pressed_scale)
 		elseif gui.pick_node(btn_show_gc_rt_match_invite_ui, action.x, action.y) then
 			gui.set_scale(btn_show_gc_rt_match_invite_ui, btn_pressed_scale)
 		elseif gui.pick_node(btn_register_rt_match_cb, action.x, action.y) then
@@ -182,6 +186,9 @@ function on_input(self, action_id, action)
 		elseif gui.pick_node(btn_show_gc_rt_match_ui, action.x, action.y) then
 			gui.set_scale(btn_show_gc_rt_match_ui, btn_default_scale)
 			msg.post("/bg#game_center", hash("show_gc_rt_match_ui"))
+		elseif gui.pick_node(btn_show_gc_rt_add_players_to_match_ui, action.x, action.y) then
+			gui.set_scale(btn_show_gc_rt_add_players_to_match_ui, btn_default_scale)
+			msg.post("/bg#game_center", hash("show_gc_rt_add_players_to_match_ui"))
 		elseif gui.pick_node(btn_show_gc_rt_match_invite_ui, action.x, action.y) then
 			gui.set_scale(btn_show_gc_rt_match_invite_ui, btn_default_scale)
 			msg.post("/bg#game_center", hash("show_gc_rt_match_invite_ui"))

@@ -17,6 +17,7 @@
 @property (nonatomic, assign) BOOL isRTMatchCallbackRegistered;
 @property (nonatomic, assign) BOOL isMatchStarted;
 @property (nonatomic, assign) UIViewController *authenticateViewController;
+@property (nonatomic, assign) GKMatchRequest *matchRequest;
 @property (nonatomic, assign) GKMatch *currentMatch;
 @property (nonatomic, assign) GKInvite *currentInvite;
 

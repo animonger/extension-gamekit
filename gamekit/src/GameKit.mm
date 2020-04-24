@@ -203,6 +203,12 @@ void finalizeGameKit(lua_State *L)
 		[gameCenterDelegatePtr.currentMatch release];
 		gameCenterDelegatePtr.currentMatch = nil;
 		gameCenterDelegatePtr.isMatchStarted = NO;
+
+		if(gameCenterDelegatePtr.matchRequest != nil) {
+        	[gameCenterDelegatePtr.matchRequest release];
+            gameCenterDelegatePtr.matchRequest = nil;
+        }
+
 		if(gameCenterDelegatePtr.isRTMatchCallbackRegistered == YES) {
 			unRegisterGameCenterCallbackLuaRef(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE);
 			gameCenterDelegatePtr.isRTMatchCallbackRegistered = NO;

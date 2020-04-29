@@ -3,9 +3,9 @@
 
 ## Status
 Currently functional Defold extension but not fully completed.  
-Integrated functional GameKit features so far: Players, Leaderboards, Achievements, View Controllers and Errors.  
+Integrated functional GameKit features so far: Players, Leaderboards, Achievements, Real-Time Matches, View Controllers and Errors.  
 
-Possible GameKit features to be integrated: Real-Time Matches, Challenges, Player Invitations, Notifications, Entitlements, Turn-based Games and Save Game Data.
+Possible GameKit features to be integrated: Save Game Data, Challenges, Player Invitations, Notifications, Entitlements and Turn-based Games.
 
 ## Requirements
 GameKit native extension supports iOS and macOS Defold apps.  
@@ -40,6 +40,7 @@ Before you add any Game Center features to your Defold game you must activate Ga
 * [**Scores**](README.md#scores)  
 * [**Leaderboards**](README.md#leaderboards)  
 * [**Achievements**](README.md#achievements)  
+* [**Real-Time Matches**](README.md#real-time matches)   
 
 ### Initialize Local Player
 Before you can make any calls to Game Center you must authenticate the local player first by calling:  
@@ -202,3 +203,5 @@ Before you can add Game Center Achievements in your game, you must configure Ach
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "success"`, (string)`event.description`  
+
+### Real-Time Matches

@@ -31,7 +31,7 @@ RealTimeCommands *realTimeCommandsPtr;
 
 void gameCenterRealTimeCommand(lua_State *L)
 {
-	NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterRealTimeCommand called");
+	// NSLog(@"DEBUG:NSLog [GameKit.mm] gameCenterRealTimeCommand called");
 	if(gameCenterDelegatePtr.isGameCenterEnabled == YES) {
 		[realTimeCommandsPtr gcRealTimeCommandFromLuaState:L];
 	} else {

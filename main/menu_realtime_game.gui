@@ -1472,7 +1472,7 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "Show GC RT +Players Match UI"
+  text: "Show GC RT Match +Players UI"
   font: "button_font"
   id: "show_gc_rt_add_players_to_match_ui/text"
   xanchor: XANCHOR_NONE

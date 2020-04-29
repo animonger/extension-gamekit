@@ -33,7 +33,7 @@
         luaL_checktype(L, 2, LUA_TTABLE);
         luaL_checktype(L, 1, LUA_TSTRING);
         const char *command = lua_tostring( L, 1 );
-        NSLog(@"DEBUG:NSLog [RealTimeCommands.mm] gcRealTimeCommandFromLuaState called command = %s", command);
+        // NSLog(@"DEBUG:NSLog [RealTimeCommands.mm] gcRealTimeCommandFromLuaState called command = %s", command);
 ///////////// command = sendDataToAllPlayers
         if(strcmp(command, "sendDataToAllPlayers") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchCallbackRegistered == YES) {
@@ -343,7 +343,6 @@
         } else if(strcmp(command, "showMatchWithInviteUI") == 0) {
             if(self.gameCenterDelegatePtr.isRTMatchmakerCallbackRegistered == YES) {
                 lua_settop(L, 0); // clear the whole stack
-                NSLog(@"DEBUG:NSLog [RealTimeCommands.mm] showMatchWithInviteUI called");
                 if(self.gameCenterDelegatePtr.currentInvite != nil) {
                     GKMatchmakerViewController *matchmakerViewController = [[GKMatchmakerViewController alloc] 
                     initWithInvite:self.gameCenterDelegatePtr.currentInvite];

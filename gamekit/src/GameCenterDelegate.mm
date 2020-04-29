@@ -38,7 +38,7 @@
 // the player has cancelled matchmaking
 - (void)matchmakerViewControllerWasCancelled:(GKMatchmakerViewController *)matchmakerViewController
 {
-    NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewControllerWasCancelled called");
+    //NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewControllerWasCancelled called");
 #if defined(DM_PLATFORM_IOS)
     [matchmakerViewController dismissViewControllerAnimated:YES completion:nil];
 #else // osx platform
@@ -50,7 +50,7 @@
 // a peer-to-peer real-time match has been found, the game should start
 - (void)matchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController didFindMatch:(GKMatch *)match
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewController didFindMatch called");
+	// NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewController didFindMatch called");
 #if defined(DM_PLATFORM_IOS)
     [matchmakerViewController dismissViewControllerAnimated:YES completion:nil];
 #else // osx platform
@@ -58,7 +58,7 @@
 #endif
 	[matchmakerViewController release];
 
-    if (self.isMatchStarted == NO) {
+    if ((self.isMatchStarted == NO) && (self.isRTMatchmakerCallbackRegistered == YES)) {
 		self.currentMatch = [match retain]; // retain the match object
 		self.currentMatch.delegate = self;
 		self.isMatchStarted = YES;
@@ -96,7 +96,7 @@
 // matchmaking has failed with an error
 - (void)matchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController didFailWithError:(NSError *)error
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewController didFailWithError called");
+	//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] matchmakerViewController didFailWithError called");
 #if defined(DM_PLATFORM_IOS)
     [matchmakerViewController dismissViewControllerAnimated:YES completion:nil];
 #else // osx platform
@@ -121,7 +121,7 @@
 // called on localPlayer device after localPlayer accepts friend invite
 - (void)player:(GKPlayer *)player didAcceptInvite:(GKInvite *)invite
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] player didAcceptInvite called");
+	// NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] player didAcceptInvite called");
 	self.currentInvite = [invite retain]; // retain the invite object
 	
 	if(self.isRTMatchmakerCallbackRegistered == YES) {
@@ -139,7 +139,7 @@
 
 - (void)presentGCMatchmakerViewController:(GKMatchmakerViewController *)matchmakerViewController
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] presentGCMatchmakerViewController called");
+	//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] presentGCMatchmakerViewController called");
 #if defined(DM_PLATFORM_IOS)
 	[[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:matchmakerViewController animated:YES completion:nil];
 #else // osx platform
@@ -151,24 +151,24 @@
 // iOS 8 and above
 - (void)match:(GKMatch *)match didReceiveData:(NSData *)data fromRemotePlayer:(GKPlayer *)player
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] didReceiveData fromRemotePlayer called");
+	//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] didReceiveData fromRemotePlayer called");
 	[self sendMatchData:data fromPlayer:player];
 }
 
 // iOS 9 and above
 - (void)match:(GKMatch *)match didReceiveData:(NSData *)data forRecipient:(GKPlayer *)recipient fromRemotePlayer:(GKPlayer *)player
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] didReceiveData forRecipient fromRemotePlayer called");
+	//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] didReceiveData forRecipient fromRemotePlayer called");
 	[self sendMatchData:data fromPlayer:player];
 }
 
 - (void)match:(GKMatch *)match player:(GKPlayer *)player didChangeConnectionState:(GKPlayerConnectionState)state
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] match player didChangeConnectionState isMatchStarted = %@", self.isMatchStarted ? @"YES" : @"NO");
+	//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] match player didChangeConnectionState isMatchStarted = %@", self.isMatchStarted ? @"YES" : @"NO");
 	switch(state)
 	{
 		case GKPlayerStateConnected:  // Added player is connected to the match and can receive data. 
-			NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateConnected match = %@,  player = %@", match, player);
+			//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateConnected match = %@,  player = %@", match, player);
 			if(self.isRTMatchmakerCallbackRegistered == YES) {
 				lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
 				lua_settop(L, 0); // clear the whole stack
@@ -189,7 +189,7 @@
 			break;
 
 		case GKPlayerStateDisconnected:  // The player is disconnected from the match and cannot receive data.
-			NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateDisconnected match = %@,  player = %@", match, player);
+			//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateDisconnected match = %@,  player = %@", match, player);
 			if(self.isRTMatchCallbackRegistered == YES) {
 				lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
 				lua_settop(L, 0); // clear the whole stack
@@ -204,7 +204,7 @@
 			break;
 
 		case GKPlayerStateUnknown:  // The player is in an indeterminate state and cannot receive data.
-			NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateUnknown match = %@,  player = %@", match, player);
+			//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] GKPlayerStateUnknown match = %@,  player = %@", match, player);
 			if(self.isRTMatchCallbackRegistered == YES) {
 				lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
 				lua_settop(L, 0); // clear the whole stack
@@ -223,7 +223,7 @@
 // called when realtime match cannot connect to any other players. it usually means a serious networking error has occurred
 - (void)match:(GKMatch *)match didFailWithError:(NSError *)error
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] match didFailWithError called");
+	//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] match didFailWithError called");
 	if(self.isRTMatchCallbackRegistered == YES) {
 		lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
 		lua_settop(L, 0); // clear the whole stack
@@ -452,22 +452,24 @@
 
 - (void)sendMatchData:(NSData *)data fromPlayer:(GKPlayer *)player
 {
-	NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendMatchData fromPlayer called");
-	lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
-	lua_settop(L, 0); // clear the whole stack
-	[self newLuaTableFromPlayerObject:player luaState:L];
-	
-	const char *dataUTF8String = (const char*) [data bytes];
-    // needs further testing, if above corrupts the data use code below instead
-    // NSString *dataString = [[NSString alloc] initWithData:matchData encoding:NSUTF8StringEncoding];
-    // need to release NSString after lua_pushstring()
-	lua_pushstring(L, dataUTF8String);
-    lua_setfield(L, -2, "data");
-	lua_pushstring(L, "matchData");
-    lua_setfield(L, -2, "type");
-	// store reference to lua event table
-	int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
-	sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
+	//NSLog(@"DEBUG:NSLog [GameCenterDelegate.mm] sendMatchData fromPlayer called");
+	if(self.isRTMatchCallbackRegistered == YES) {
+		lua_State *L = dmScript::GetMainThread(self.luaStatePtr);
+		lua_settop(L, 0); // clear the whole stack
+		[self newLuaTableFromPlayerObject:player luaState:L];
+		
+		const char *dataUTF8String = (const char*) [data bytes];
+		// needs further testing, if above corrupts the data use code below instead
+		// NSString *dataString = [[NSString alloc] initWithData:matchData encoding:NSUTF8StringEncoding];
+		// need to release NSString after lua_pushstring()
+		lua_pushstring(L, dataUTF8String);
+		lua_setfield(L, -2, "data");
+		lua_pushstring(L, "matchData");
+		lua_setfield(L, -2, "type");
+		// store reference to lua event table
+		int luaTableRef = dmScript::Ref(L, LUA_REGISTRYINDEX);
+		sendGameCenterRegisteredCallbackLuaEvent(L, GC_RT_MATCH_CALLBACK, GC_RT_MATCH_LUA_INSTANCE, luaTableRef);
+	}
 }
 
 - (void)sendImageFromLeaderboard:(GKLeaderboard *)leaderboard luaCallbackRef:(NSInteger)cbRef luaSelfRef:(NSInteger)selfRef luaState:(lua_State *)L

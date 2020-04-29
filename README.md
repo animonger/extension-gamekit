@@ -40,7 +40,7 @@ Before you add any Game Center features to your Defold game you must activate Ga
 * [**Scores**](README.md#scores)  
 * [**Leaderboards**](README.md#leaderboards)  
 * [**Achievements**](README.md#achievements)  
-* [**Real-Time Matches**](README.md#real-time matches)   
+* [**Real-Time Matches**](README.md#real-time-matches)   
 
 ### Initialize Local Player
 Before you can make any calls to Game Center you must authenticate the local player first by calling:  

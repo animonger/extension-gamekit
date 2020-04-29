@@ -205,3 +205,22 @@ Before you can add Game Center Achievements in your game, you must configure Ach
 `event.type == "success"`, (string)`event.description`  
 
 ### Real-Time Matches
+Before you can call any other Game Center Real-Time functions, you must register the Real-Time matchmaker callback.
+
+**gamekit.gc_realtime("registerMatchmakerCallback", {parms})** - Register Game Center Real-Time matchmaker callback. 
+`gamekit.gc_realtime("registerMatchmakerCallback", {callback=on_realtime_matchmaker})`  
+**Parameters Table Keys:**  
+(function) **callback** – A Lua function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "success"`, (string)`event.description`  
+`event.type == "acceptedInvite"`  
+`event.type == "matchStarted"`, (number) `event.expectedPlayerCount`, (number) `event.playersCount`, (table) `event.players`, (string) `event.players[i].playerAlias`, (string) `event.players[i].playerDisplayName` and (string) `event.players[i].playerID`  
+`event.type == "playerAddedToMatch"`, (number) `event.expectedPlayerCount`,  (number) `event.playersCount`, (string) `event.playerAlias`, (string) `event.playerDisplayName` and (string) `event.playerID`  
+
+**gamekit.gc_realtime("unregisterMatchmakerCallback", {})** - Unregister Game Center Real-Time matchmaker callback. 
+`gamekit.gc_realtime("unregisterMatchmakerCallback", {})`  
+**Parameters Table Keys:**  none - Parameters table expected even though there are no parameters to send.   
+**Callback Events:**  
+`event.type == "success"`, (string)`event.description`  
+

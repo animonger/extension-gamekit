@@ -231,7 +231,7 @@ After you Unregister Game Center Real-Time Matchmaker callback your game will no
 (number) **minPlayers** –  A minimum number of players that may join the match. The minPlayers number must be at least 2.    
 (number) **maxPlayers** – A maximum number of players that may join the match. The maxPlayers number is 4 and must be equal or greater than the minPlayers number.   
 (number) **defaultNumPlayers** – A default number of players that determines the number of invitees shown in the Game Center Match UI. The local player can choose to override this by adding or removing players in the Match UI.    
-(number) **playerGroup** (optional key) – A number identifying a subset of players allowed to join the match. Only players whose requests share the same playerGroup value are auto-matched by Game Center. For more information, see playerGroup in the Matchmaking Overview Guide.  
+(number) **playerGroup** (optional key) – A number identifying a subset of players allowed to join the match. Only players whose requests share the same playerGroup value are auto-matched by Game Center. For more information, see playerGroup in the [Matchmaking Overview](https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/GameKit_Guide/MatchmakingwithGameCenter/MatchmakingwithGameCenter.html#//apple_ref/doc/uid/TP40008304-CH12-SW2) Guide.    
 (number) **playerAttributes** (optional key) – A hexadecimal number mask that specifies the role that the local player would like to play in the game. For more information, see playerAttributes in the [Matchmaking Overview](https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/GameKit_Guide/MatchmakingwithGameCenter/MatchmakingwithGameCenter.html#//apple_ref/doc/uid/TP40008304-CH12-SW2) Guide.  
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`   
@@ -250,7 +250,7 @@ After you Unregister Game Center Real-Time Matchmaker callback your game will no
 **Callback Events:**  
 `event.type == "acceptedInvite"`  
 
-Before you can receive Match events or call sendDataToAllPlayers and sendDataToPlayers Game Center Real-Time functions, you must register the Real-Time Match callback.
+Before you can receive Match events or call sendDataToAllPlayers and sendDataToPlayers Game Center Real-Time commands, you must register the Real-Time Match callback.
 
 **gamekit.gc_realtime("registerMatchCallback", {parms})** - Register Game Center Real-Time Match callback. 
 `gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match})`  
@@ -263,7 +263,7 @@ Before you can receive Match events or call sendDataToAllPlayers and sendDataToP
 `event.type == "playerStateDisconnected"`, (string) `event.playerAlias`, (string) `event.playerDisplayName`, (string) `event.playerID`  
 `event.type == "playerStateUnknown"`, (string) `event.playerAlias`, (string) `event.playerDisplayName`, (string) `event.playerID`    
 
-**gamekit.gc_realtime("disconnectMatch", {})** - Disconnect Game Center Real-Time Match and Unregister Real-Time Match callback. 
+**gamekit.gc_realtime("disconnectMatch", {})** - Disconnect Game Center Real-Time Match and Unregister Real-Time Match callback.   
 `gamekit.gc_realtime("disconnectMatch", {})`  
 **Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.   
 **Callback Events:**  
@@ -285,9 +285,10 @@ After you Unregister Game Center Real-Time Match callback your game will no long
 **Parameters Table Keys:**  
 (string) **data** –  A data string (e.g. Base64) sent by the local player. Your game defines its own format for the string data it transmits and receives over the Game Center network.    
 (string) **dataMode** – A data send mode type string used to transmit data to other players. dataMode=”Reliable” or dataMode=”Unreliable”. “Reliable” (TCP) limits the size of data sent to 87 kilobytes or smaller and transmissions are delivered in the order they were sent. The data is sent continuously until it is successfully received by the intended recipients or the connection times out. Use reliable when you need to guarantee delivery and speed is not critical. “Unreliable” (UDP) limits the size of data sent to 1000 bytes or smaller and transmissions delivered may be received out of order by recipients. Typically, you build your own game-specific error handling on top of this mechanism. The data is sent once and is not sent again if a transmission error occurs. Use this for small packets of data that must arrive quickly to be useful to the recipient.  
-(table) **playerIDs** – An array of 1 or more playerID strings that the data is to be sent to.
+(table) **playerIDs** – An array of 1 or more playerID strings of the players that the data is to be sent to.
 (boolean) **isConfirmed** – A boolean to turn on or off the confirmation event callback. true = "data was successfully queued to players" and false = no event.  
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`   
 `event.type == "success"`, (string)`event.description`  
 
+[**Content Links Menu**](README.md#content-links)  

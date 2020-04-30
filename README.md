@@ -224,3 +224,21 @@ Before you can call any other Game Center Real-Time functions, you must register
 **Callback Events:**  
 `event.type == "success"`, (string)`event.description`  
 
+**gamekit.gc_realtime("showMatchUI", {parms})** - Show Game Center Real-Time match UI. 
+`gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2, playerGroup=42, playerAttributes=0xFFFF0000})`  
+**Parameters Table Keys:**  
+(number) **minPlayers** –  A minimum number of players that may join the match. The minPlayers number must be at least 2.    
+(number) **maxPlayers** – A maximum number of players that may join the match. The maxPlayers number is 4 and must be equal or greater than the minPlayers number.   
+(number) **defaultNumPlayers** – A default number of players that determines the number of invitees shown in the Game Center Match UI. The local player can choose to override this by adding or removing players in the Match UI.    
+(number) **playerGroup** (optional key) – A number identifying a subset of players allowed to join the match. Only players whose requests share the same playerGroup value are auto-matched by Game Center. For more information, see playerGroup in the Matchmaking Overview Guide.  
+(number) **playerAttributes** (optional key) – A hexadecimal number mask that specifies the role that the local player would like to play in the game. For more information, see playerAttributes in the [Matchmaking Overview](https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/GameKit_Guide/MatchmakingwithGameCenter/MatchmakingwithGameCenter.html#//apple_ref/doc/uid/TP40008304-CH12-SW2) Guide.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`   
+`event.type == "matchStarted"`, (number) `event.expectedPlayerCount`, (number) `event.playersCount`, (table) `event.players`, (string) `event.players[i].playerAlias`, (string) `event.players[i].playerDisplayName` and (string) `event.players[i].playerID`   
+
+**gamekit.gc_realtime("showAddPlayersToMatchUI", {})** - Show Game Center Add Players to Real-Time match UI. 
+`gamekit.gc_realtime("showAddPlayersToMatchUI", {})`  
+**Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.   
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "playerAddedToMatch"`, (number) `event.expectedPlayerCount`,  (number) `event.playersCount`, (string) `event.playerAlias`, (string) `event.playerDisplayName` and (string) `event.playerID`   

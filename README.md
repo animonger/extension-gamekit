@@ -205,9 +205,9 @@ Before you can add Game Center Achievements in your game, you must configure Ach
 `event.type == "success"`, (string)`event.description`  
 
 ### Real-Time Matches
-Before you can call any other Game Center Real-Time functions, you must register the Real-Time matchmaker callback.
+Before you can receive Matchmaker events or call any Game Center Real-Time functions, you must register the Real-Time Matchmaker callback.
 
-**gamekit.gc_realtime("registerMatchmakerCallback", {parms})** - Register Game Center Real-Time matchmaker callback. 
+**gamekit.gc_realtime("registerMatchmakerCallback", {parms})** - Register Game Center Real-Time Matchmaker callback. 
 `gamekit.gc_realtime("registerMatchmakerCallback", {callback=on_realtime_matchmaker})`  
 **Parameters Table Keys:**  
 (function) **callback** – A Lua function to receive callback events.  
@@ -218,13 +218,14 @@ Before you can call any other Game Center Real-Time functions, you must register
 `event.type == "matchStarted"`, (number) `event.expectedPlayerCount`, (number) `event.playersCount`, (table) `event.players`, (string) `event.players[i].playerAlias`, (string) `event.players[i].playerDisplayName` and (string) `event.players[i].playerID`  
 `event.type == "playerAddedToMatch"`, (number) `event.expectedPlayerCount`,  (number) `event.playersCount`, (string) `event.playerAlias`, (string) `event.playerDisplayName` and (string) `event.playerID`  
 
-**gamekit.gc_realtime("unregisterMatchmakerCallback", {})** - Unregister Game Center Real-Time matchmaker callback. 
+**gamekit.gc_realtime("unregisterMatchmakerCallback", {})** - Unregister Game Center Real-Time Matchmaker callback. 
 `gamekit.gc_realtime("unregisterMatchmakerCallback", {})`  
 **Parameters Table Keys:**  none - Parameters table expected even though there are no parameters to send.   
 **Callback Events:**  
 `event.type == "success"`, (string)`event.description`  
+After you Unregister Game Center Real-Time Matchmaker callback your game will no longer receive Matchmaker events.
 
-**gamekit.gc_realtime("showMatchUI", {parms})** - Show Game Center Real-Time match UI. 
+**gamekit.gc_realtime("showMatchUI", {parms})** - Show Game Center Real-Time Match UI. 
 `gamekit.gc_realtime("showMatchUI", {minPlayers=2, maxPlayers=2, defaultNumPlayers=2, playerGroup=42, playerAttributes=0xFFFF0000})`  
 **Parameters Table Keys:**  
 (number) **minPlayers** –  A minimum number of players that may join the match. The minPlayers number must be at least 2.    
@@ -236,9 +237,57 @@ Before you can call any other Game Center Real-Time functions, you must register
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`   
 `event.type == "matchStarted"`, (number) `event.expectedPlayerCount`, (number) `event.playersCount`, (table) `event.players`, (string) `event.players[i].playerAlias`, (string) `event.players[i].playerDisplayName` and (string) `event.players[i].playerID`   
 
-**gamekit.gc_realtime("showAddPlayersToMatchUI", {})** - Show Game Center Add Players to Real-Time match UI. 
+**gamekit.gc_realtime("showAddPlayersToMatchUI", {})** - Show Game Center Add Players to Real-Time Match UI. 
 `gamekit.gc_realtime("showAddPlayersToMatchUI", {})`  
 **Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.   
 **Callback Events:**  
 `event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
 `event.type == "playerAddedToMatch"`, (number) `event.expectedPlayerCount`,  (number) `event.playersCount`, (string) `event.playerAlias`, (string) `event.playerDisplayName` and (string) `event.playerID`   
+
+**gamekit.gc_realtime("showMatchWithInviteUI", {})** - Show Game Center Real-Time Match with Invite UI. 
+`gamekit.gc_realtime("showMatchWithInviteUI", {})`  
+**Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.   
+**Callback Events:**  
+`event.type == "acceptedInvite"`  
+
+Before you can receive Match events or call sendDataToAllPlayers and sendDataToPlayers Game Center Real-Time functions, you must register the Real-Time Match callback.
+
+**gamekit.gc_realtime("registerMatchCallback", {parms})** - Register Game Center Real-Time Match callback. 
+`gamekit.gc_realtime("registerMatchCallback", {callback=on_realtime_match})`  
+**Parameters Table Keys:**  
+(function) **callback** – A Lua function to receive callback events.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`  
+`event.type == "success"`, (string)`event.description`  
+`event.type == "matchData"`, (string) `event.data`, (string) `event.playerAlias`, (string) `event.playerDisplayName`, (string) `event.playerID`   
+`event.type == "playerStateDisconnected"`, (string) `event.playerAlias`, (string) `event.playerDisplayName`, (string) `event.playerID`  
+`event.type == "playerStateUnknown"`, (string) `event.playerAlias`, (string) `event.playerDisplayName`, (string) `event.playerID`    
+
+**gamekit.gc_realtime("disconnectMatch", {})** - Disconnect Game Center Real-Time Match and Unregister Real-Time Match callback. 
+`gamekit.gc_realtime("disconnectMatch", {})`  
+**Parameters Table Keys:** none - Parameters table expected even though there are no parameters to send.   
+**Callback Events:**  
+`event.type == "success"`, (string)`event.description`  
+After you Unregister Game Center Real-Time Match callback your game will no longer receive Match events.  
+
+**gamekit.gc_realtime("sendDataToAllPlayers", {parms})** - Send Game Center Real-Time Match Data To All Match Players. 
+`gamekit.gc_realtime("sendDataToAllPlayers", {data=your_game_data, dataMode="Unreliable", isConfirmed=true})`  
+**Parameters Table Keys:**  
+(string) **data** –  A data string (e.g. Base64) sent by the local player. Your game defines its own format for the string data it transmits and receives over the Game Center network.    
+(string) **dataMode** – A data send mode type string used to transmit data to other players. dataMode=”Reliable” or dataMode=”Unreliable”. “Reliable” (TCP) limits the size of data sent to 87 kilobytes or smaller and transmissions are delivered in the order they were sent. The data is sent continuously until it is successfully received by the intended recipients or the connection times out. Use reliable when you need to guarantee delivery and speed is not critical. “Unreliable” (UDP) limits the size of data sent to 1000 bytes or smaller and transmissions delivered may be received out of order by recipients. Typically, you build your own game-specific error handling on top of this mechanism. The data is sent once and is not sent again if a transmission error occurs. Use this for small packets of data that must arrive quickly to be useful to the recipient.  
+(boolean) **isConfirmed** – A boolean to turn on or off the confirmation event callback. true = "data was successfully queued to all players" and false = no event.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`   
+`event.type == "success"`, (string)`event.description`  
+
+**gamekit.gc_realtime("sendDataToPlayers", {parms})** - Send Game Center Real-Time Match Data To Specific Match Players. 
+`gamekit.gc_realtime("sendDataToPlayers", {data=your_game_data, dataMode="Reliable", playerIDs={“G:2073637149”, “G:4082635394”}, isConfirmed=true})`  
+**Parameters Table Keys:**  
+(string) **data** –  A data string (e.g. Base64) sent by the local player. Your game defines its own format for the string data it transmits and receives over the Game Center network.    
+(string) **dataMode** – A data send mode type string used to transmit data to other players. dataMode=”Reliable” or dataMode=”Unreliable”. “Reliable” (TCP) limits the size of data sent to 87 kilobytes or smaller and transmissions are delivered in the order they were sent. The data is sent continuously until it is successfully received by the intended recipients or the connection times out. Use reliable when you need to guarantee delivery and speed is not critical. “Unreliable” (UDP) limits the size of data sent to 1000 bytes or smaller and transmissions delivered may be received out of order by recipients. Typically, you build your own game-specific error handling on top of this mechanism. The data is sent once and is not sent again if a transmission error occurs. Use this for small packets of data that must arrive quickly to be useful to the recipient.  
+(table) **playerIDs** – An array of 1 or more playerID strings that the data is to be sent to.
+(boolean) **isConfirmed** – A boolean to turn on or off the confirmation event callback. true = "data was successfully queued to players" and false = no event.  
+**Callback Events:**  
+`event.type == "error"`, (number) `event.errorCode` and (string) `event.description`   
+`event.type == "success"`, (string)`event.description`  
+

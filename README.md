@@ -35,6 +35,10 @@ Before you add any Game Center features to your Defold game you must activate Ga
 
 (namespace) `gamekit.` (function) `gc_send(` (command) `"score",` (parameters table) `{` (param key) `leaderboardID=` (param value) (string) `"your_gc_leaderboardID", value=` (number) `323, context=` (number) `42, callback=` (lua function) `on_scores})`  
 
+**Example callback:**  
+`function on_scores(self, event)`
+Every GameKit Lua callback fuction has only 2 parameters: self and event table.
+
 ### Content Links
 * [**Initialize Local Player**](README.md#initialize-local-player)  
 * [**Scores**](README.md#scores)  

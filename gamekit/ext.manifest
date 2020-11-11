@@ -4,7 +4,7 @@ platforms:
   x86_64-osx:
     context:
         frameworks: ["Foundation", "GameKit"]
-        
+
   x86-osx:
     context:
         frameworks: ["Foundation", "GameKit"]
@@ -14,5 +14,9 @@ platforms:
         frameworks: ["Foundation", "GameKit", "UIKit"]
 
   armv7-ios:
+    context:
+        frameworks: ["Foundation", "GameKit", "UIKit"]
+
+  x86_64-ios:
     context:
         frameworks: ["Foundation", "GameKit", "UIKit"]
